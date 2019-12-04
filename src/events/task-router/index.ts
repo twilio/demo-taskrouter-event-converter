@@ -1,7 +1,5 @@
-const moment = require('moment');
-const twilio = require('twilio')(process.env.TWILIO_KEY_SID, process.env.TWILIO_SECRET_SID, {
-  accountSid: process.env.TWILIO_ACCOUNT_SID,
-});
+/* eslint-disable @typescript-eslint/camelcase */
+import moment from 'moment';
 
 const workerStatus = {
   available: 'available',
@@ -12,7 +10,7 @@ const workerStatus = {
 
 const taskCreatedHandler = ({
   EventType, TaskAttributes, TimestampMs,
-}) => {
+}: any) => {
   if (EventType !== 'task.created') {
     throw new Error("Only tasks of type 'task.created' can be handled by taskCreatedHandler.");
   }
@@ -35,7 +33,7 @@ const taskCreatedHandler = ({
 
 const taskCanceledHandler = ({
   EventType, TaskAttributes, TimestampMs,
-}) => {
+}: any) => {
   if (EventType !== 'task.canceled') {
     throw new Error("Only tasks of type 'task.canceled' can be handled by taskCanceledhandler.");
   }
@@ -53,7 +51,7 @@ const taskCanceledHandler = ({
 
 const reservationAcceptedHandler = ({
   EventType, TaskAttributes, WorkerName, WorkerSid, TaskQueueSid, TimestampMs,
-}) => {
+}: any) => {
   if (EventType !== 'reservation.accepted') {
     throw new Error("Only tasks of type 'reservation.accepted' can be handled by reservationAcceptedHandler.");
   }
@@ -83,7 +81,7 @@ const reservationAcceptedHandler = ({
 
 const workerActivityUpdateHandler = ({
   EventType, WorkerActivityName, WorkerPreviousActivityName, WorkerName, WorkerSid, TimestampMs,
-}) => {
+}: any) => {
   if (EventType !== 'worker.activity.update') {
     throw new Error("Only tasks of type 'worker.activity.update' can be handled by workerActivityUpdateHandler.");
   }
@@ -134,7 +132,7 @@ const workerActivityUpdateHandler = ({
 /**
  * EventMapping from TaskRouter to teravoz events
  */
-const eventsMapping = {
+const eventsMapping: any = {
   'task.created': () => taskCreatedHandler,
   'task.canceled': taskCanceledHandler,
   'reservation.accepted': reservationAcceptedHandler,
@@ -144,9 +142,8 @@ const eventsMapping = {
 
 /**
  * Handles events from TaskRouter and convert it to the equivalent event from Teravoz
- * @param {object} event
  */
-const taskRouterEventHandler = (event) => {
+const taskRouterEventHandler = (event: any) => {
   const mapEvent = eventsMapping[event.EventType];
 
   if (mapEvent) {
@@ -156,4 +153,4 @@ const taskRouterEventHandler = (event) => {
   return null;
 };
 
-module.exports.taskRouterEventHandler = taskRouterEventHandler;
+export { taskRouterEventHandler };

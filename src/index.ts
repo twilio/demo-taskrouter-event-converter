@@ -1,9 +1,9 @@
-const express = require('express');
-const { logger } = require('./logger');
+import express from 'express';
 
-const { taskRouterEventHandler } = require('./events/task-router');
+import { logger } from './logger';
+import { taskRouterEventHandler } from './events/task-router';
 
-const getCommonRequestDetails = (req) => {
+const getCommonRequestDetails = (req: express.Request) => {
   const {
     method, statusCode, headers, url, connection, body, params, query,
   } = req;
@@ -20,13 +20,13 @@ const getCommonRequestDetails = (req) => {
   };
 };
 
-const requestLogger = (req, res, next) => {
+const requestLogger = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   logger.info(`Received request to ${req.method} ${req.url}`);
   logger.debug(getCommonRequestDetails(req));
   next();
 };
 
-(() => {
+((): void => {
   const app = express();
 
   app.use(express.json());
@@ -40,7 +40,7 @@ const requestLogger = (req, res, next) => {
     const events = taskRouterEventHandler(event);
 
     if (events && events.length) {
-      events.forEach((ev) => {
+      events.forEach((ev: any) => {
         logger.info(`Emitting event converted from ${event.EventType}`, ev);
       });
     } else {
