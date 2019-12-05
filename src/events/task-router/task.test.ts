@@ -1,4 +1,4 @@
-import { taskRouterEventHandler } from './index';
+import { taskRouterEventConverter } from './index';
 
 describe('Convert task.created', (): void => {
   test('Should convert task.created to call.new', (): void => {
@@ -15,7 +15,7 @@ describe('Convert task.created', (): void => {
       TimestampMs: Date.now(),
     };
 
-    const events = taskRouterEventHandler(input);
+    const events = taskRouterEventConverter(input);
 
     expect(events).not.toBeFalsy();
     expect(events).toBeInstanceOf(Array);
@@ -46,7 +46,7 @@ describe('Convert task.canceled', (): void => {
       TimestampMs: Date.now(),
     };
 
-    const events = taskRouterEventHandler(input);
+    const events = taskRouterEventConverter(input);
 
     expect(events).not.toBeFalsy();
     expect(events).toBeInstanceOf(Array);

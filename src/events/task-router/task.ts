@@ -3,7 +3,7 @@ import { CallEvent, CallEvents } from '../teravoz';
 
 export const taskCreatedHandler = ({
   EventType, TaskAttributes, TimestampMs,
-}: any): CallEvent[] => {
+}: any): [CallEvent] => {
   if (EventType !== 'task.created') {
     throw new Error("Only tasks of type 'task.created' can be handled by taskCreatedHandler.");
   }

@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { logger } from './logger';
-import { taskRouterEventHandler } from './events/task-router';
+import { taskRouterEventConverter } from './events/task-router';
 
 const getCommonRequestDetails = (req: express.Request) => {
   const {
@@ -37,7 +37,7 @@ const requestLogger = (req: express.Request, res: express.Response, next: expres
     const { body: event } = req;
 
     logger.info(`POST /webhook: Received ${event.EventType}.`, event);
-    const events = taskRouterEventHandler(event);
+    const events = taskRouterEventConverter(event);
 
     if (events && events.length) {
       events.forEach((ev: any) => {

@@ -1,4 +1,4 @@
-import { taskRouterEventHandler } from './index';
+import { taskRouterEventConverter } from './index';
 
 describe('Convert reservation.accepted', (): void => {
   test('Should convert reservation.accepted to agent.entered and call.ongoing', (): void => {
@@ -18,7 +18,7 @@ describe('Convert reservation.accepted', (): void => {
       TimestampMs: Date.now(),
     };
 
-    const events = taskRouterEventHandler(input);
+    const events = taskRouterEventConverter(input);
 
     expect(events).not.toBeFalsy();
     expect(events).toBeInstanceOf(Array);

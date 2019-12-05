@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import { TeravozEvent } from '../teravoz';
+import { AgentEvents, AgentEvent } from '../teravoz';
 
 export const workerStatus = {
   available: 'available',
@@ -11,7 +11,7 @@ export const workerStatus = {
 
 export const workerActivityUpdateHandler = ({
   EventType, WorkerActivityName, WorkerPreviousActivityName, WorkerName, WorkerSid, TimestampMs,
-}: any): Record<string, any> & TeravozEvent[] => {
+}: any): [AgentEvent] | [] => {
   if (EventType !== 'worker.activity.update') {
     throw new Error("Only tasks of type 'worker.activity.update' can be handled by workerActivityUpdateHandler.");
   }
@@ -24,7 +24,7 @@ export const workerActivityUpdateHandler = ({
     case workerStatus.available: {
       if (WorkerPreviousActivityName === workerStatus.break) {
         return [{
-          type: 'actor.unpaused',
+          type: AgentEvents.unpaused,
           actor: WorkerName,
           number: WorkerSid,
           timestamp: moment(+TimestampMs).format(),
@@ -32,7 +32,7 @@ export const workerActivityUpdateHandler = ({
       }
 
       return [{
-        type: 'actor.logged-in',
+        type: AgentEvents.loggedIn,
         actor: WorkerName,
         number: WorkerSid,
         timestamp: moment(+TimestampMs).format(),
@@ -42,7 +42,7 @@ export const workerActivityUpdateHandler = ({
     case workerStatus.offline:
       if (WorkerPreviousActivityName.toLowerCase() !== workerStatus.unavailable) {
         return [{
-          type: 'actor.logged-out',
+          type: AgentEvents.loggedOut,
           actor: WorkerName,
           number: WorkerSid,
           timestamp: moment(+TimestampMs).format(),
@@ -52,7 +52,7 @@ export const workerActivityUpdateHandler = ({
       return [];
     case workerStatus.break:
       return [{
-        type: 'actor.paused',
+        type: AgentEvents.paused,
         actor: WorkerName,
         number: WorkerSid,
         timestamp: moment(+TimestampMs).format(),

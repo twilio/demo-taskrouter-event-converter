@@ -1,8 +1,7 @@
 import { eventsMapping } from './events-map';
+import { TeravozEvent } from '../teravoz';
 
-/* eslint-disable @typescript-eslint/camelcase */
-
-export const taskRouterEventHandler = (event: any) => {
+export const taskRouterEventConverter = (event: any): TeravozEvent[] => {
   const mapEvent = eventsMapping[event.EventType];
 
   if (mapEvent) {

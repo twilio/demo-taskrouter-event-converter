@@ -1,8 +1,12 @@
 import moment from 'moment';
 
+import {
+  AgentEvent, AgentEvents, CallEvent, CallEvents,
+} from '../teravoz';
+
 export const reservationAcceptedHandler = ({
   EventType, TaskAttributes, WorkerName, WorkerSid, TaskQueueSid, TimestampMs,
-}: any) => {
+}: any): [AgentEvent, CallEvent] => {
   if (EventType !== 'reservation.accepted') {
     throw new Error("Only tasks of type 'reservation.accepted' can be handled by reservationAcceptedHandler.");
   }
@@ -13,7 +17,7 @@ export const reservationAcceptedHandler = ({
 
   return [
     {
-      type: 'actor.entered',
+      type: AgentEvents.entered,
       call_id: callId,
       actor: WorkerName,
       number: WorkerSid,
@@ -21,7 +25,7 @@ export const reservationAcceptedHandler = ({
       timestamp: moment(+TimestampMs).format(),
     },
     {
-      type: 'call.ongoing',
+      type: CallEvents.ongoing,
       call_id: callId,
       direction,
       our_number: called,
