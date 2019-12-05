@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import moment from 'moment';
+import { CallEvent, CallEvents, TeravozEvent } from '../teravoz';
 
 const workerStatus = {
   available: 'available',
@@ -10,7 +11,7 @@ const workerStatus = {
 
 const taskCreatedHandler = ({
   EventType, TaskAttributes, TimestampMs,
-}: any) => {
+}: any): CallEvent[] => {
   if (EventType !== 'task.created') {
     throw new Error("Only tasks of type 'task.created' can be handled by taskCreatedHandler.");
   }
@@ -21,7 +22,7 @@ const taskCreatedHandler = ({
 
   return [
     {
-      type: 'call.new',
+      type: CallEvents.new,
       call_id: callId,
       direction,
       our_number: called,
@@ -33,7 +34,7 @@ const taskCreatedHandler = ({
 
 const taskCanceledHandler = ({
   EventType, TaskAttributes, TimestampMs,
-}: any) => {
+}: any): CallEvent[] => {
   if (EventType !== 'task.canceled') {
     throw new Error("Only tasks of type 'task.canceled' can be handled by taskCanceledhandler.");
   }
@@ -42,9 +43,9 @@ const taskCanceledHandler = ({
 
   return [
     {
-      type: 'call.queue-abandon',
+      type: CallEvents.queueAbandon,
       call_id: callId,
-      timestamp: moment(+TimestampMs),
+      timestamp: moment(+TimestampMs).format(),
     },
   ];
 };
@@ -75,15 +76,20 @@ const reservationAcceptedHandler = ({
       direction,
       our_number: called,
       their_number: from,
+      timestamp: moment(+TimestampMs).format(),
     },
   ];
 };
 
 const workerActivityUpdateHandler = ({
   EventType, WorkerActivityName, WorkerPreviousActivityName, WorkerName, WorkerSid, TimestampMs,
-}: any) => {
+}: any): Record<string, any> & TeravozEvent[] => {
   if (EventType !== 'worker.activity.update') {
     throw new Error("Only tasks of type 'worker.activity.update' can be handled by workerActivityUpdateHandler.");
+  }
+
+  if (WorkerPreviousActivityName === WorkerActivityName) {
+    return [];
   }
 
   switch (WorkerActivityName.toLowerCase()) {
@@ -106,8 +112,7 @@ const workerActivityUpdateHandler = ({
     }
     case workerStatus.unavailable:
     case workerStatus.offline:
-      if (![workerStatus.offline, workerStatus.unavailable]
-        .includes(WorkerPreviousActivityName.toLowerCase())) {
+      if (WorkerPreviousActivityName.toLowerCase() !== workerStatus.unavailable) {
         return [{
           type: 'actor.logged-out',
           actor: WorkerName,
@@ -116,7 +121,7 @@ const workerActivityUpdateHandler = ({
         }];
       }
 
-      return null;
+      return [];
     case workerStatus.break:
       return [{
         type: 'actor.paused',
@@ -125,7 +130,7 @@ const workerActivityUpdateHandler = ({
         timestamp: moment(+TimestampMs).format(),
       }];
     default:
-      return null;
+      return [];
   }
 };
 
@@ -133,7 +138,7 @@ const workerActivityUpdateHandler = ({
  * EventMapping from TaskRouter to teravoz events
  */
 const eventsMapping: any = {
-  'task.created': () => taskCreatedHandler,
+  'task.created': taskCreatedHandler,
   'task.canceled': taskCanceledHandler,
   'reservation.accepted': reservationAcceptedHandler,
   'worker.activity.update': workerActivityUpdateHandler,
@@ -150,7 +155,7 @@ const taskRouterEventHandler = (event: any) => {
     return mapEvent(event);
   }
 
-  return null;
+  return [];
 };
 
 export { taskRouterEventHandler };

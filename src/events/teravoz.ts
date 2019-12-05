@@ -1,4 +1,4 @@
-export interface Event {
+export interface TeravozEvent {
   type: string;
   timestamp: string;
 }
@@ -17,12 +17,12 @@ export enum CallEvents {
   waiting = 'call.waiting',
 }
 
-export interface CallEvent extends Event {
+export interface CallEvent extends TeravozEvent {
   type: CallEvents;
   call_id: string;
-  direction: string;
-  our_number: string;
-  their_number: string;
+  direction?: string;
+  our_number?: string;
+  their_number?: string;
   code?: string;
 }
 
@@ -37,7 +37,7 @@ export enum AgentEvents {
   unpaused = 'actor.unpaused'
 }
 
-export interface AgentEvent extends Event {
+export interface AgentEvent extends TeravozEvent {
   type: AgentEvents;
   actor: string;
   number: string;
