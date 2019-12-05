@@ -28,7 +28,8 @@ module.exports = {
     },
     "rules": {
       "import/prefer-default-export": 0,
-      "@typescript-eslint/no-explicit-any": 0
+      "@typescript-eslint/no-explicit-any": 0,
+      "@typescript-eslint/camelcase": 0
     },
     "overrides": [
       {
