@@ -313,23 +313,3 @@ describe('Convert worker.activity.update', () => {
     });
   });
 });
-
-describe('Misc', () => {
-  test('Should return an empty array if an unhandled event is passed in', () => {
-    const events = taskRouterEventConverter({
-      EventType: 'not.handled',
-    });
-
-    expect(events).not.toBeFalsy();
-    expect(events).toBeInstanceOf(Array);
-    expect(events.length).toBe(0);
-  });
-
-  test('Should return an empty array if EventType is not provided', () => {
-    const events = taskRouterEventConverter({});
-
-    expect(events).not.toBeFalsy();
-    expect(events).toBeInstanceOf(Array);
-    expect(events.length).toBe(0);
-  });
-});
