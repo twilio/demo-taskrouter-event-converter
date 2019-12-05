@@ -23,7 +23,7 @@ export const taskQueueEnteredHandler = ({
       our_number: called,
       their_number: from,
       queue: TaskQueueSid,
-      timestamp: moment(TimestampMs).format(),
+      timestamp: moment(+TimestampMs).format(),
     },
   ];
 };

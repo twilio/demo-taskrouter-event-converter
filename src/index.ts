@@ -1,5 +1,5 @@
 import express from 'express';
-
+import fetch, { Headers } from 'node-fetch';
 import { logger } from './logger';
 import { taskRouterEventConverter } from './events/task-router';
 
@@ -40,8 +40,18 @@ const requestLogger = (req: express.Request, res: express.Response, next: expres
     const events = taskRouterEventConverter(event);
 
     if (events && events.length) {
-      events.forEach((ev: any) => {
+      events.forEach(async (ev: any) => {
         logger.info(`Emitting event converted from ${event.EventType}`, ev);
+
+        const res = await fetch('https://developers-staging.teravoz.com.br/myevents?login=enristaging', {
+          method: 'POST',
+          body: JSON.stringify(ev),
+          headers: new Headers({
+            'Content-Type': 'application/json',
+          }),
+        });
+
+        logger.info('Event emitted: ', res);
       });
     } else {
       logger.info(`Event ${event.EventType} not found to convert to Teravoz's event. Ignoring.`);
