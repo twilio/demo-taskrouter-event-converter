@@ -10,7 +10,7 @@ export const workerStatus = {
 };
 
 export const workerActivityUpdateHandler = ({
-  EventType, WorkerActivityName, WorkerPreviousActivityName, WorkerName, WorkerSid, TimestampMs,
+  EventType, WorkerActivityName, WorkerPreviousActivityName, WorkerName, WorkerAttributes, TimestampMs,
 }: any): [AgentEvent] | [] => {
   if (EventType !== 'worker.activity.update') {
     throw new Error("Only tasks of type 'worker.activity.update' can be handled by workerActivityUpdateHandler.");
@@ -20,13 +20,15 @@ export const workerActivityUpdateHandler = ({
     return [];
   }
 
+  const { contact_uri: contactUri } = JSON.parse(WorkerAttributes);
+
   switch (WorkerActivityName.toLowerCase()) {
     case workerStatus.available: {
       if (WorkerPreviousActivityName === workerStatus.break) {
         return [{
           type: AgentEvents.unpaused,
           actor: WorkerName,
-          number: WorkerSid,
+          number: contactUri,
           timestamp: moment(+TimestampMs).format(),
         }];
       }
@@ -34,7 +36,7 @@ export const workerActivityUpdateHandler = ({
       return [{
         type: AgentEvents.loggedIn,
         actor: WorkerName,
-        number: WorkerSid,
+        number: contactUri,
         timestamp: moment(+TimestampMs).format(),
       }];
     }
@@ -44,7 +46,7 @@ export const workerActivityUpdateHandler = ({
         return [{
           type: AgentEvents.loggedOut,
           actor: WorkerName,
-          number: WorkerSid,
+          number: contactUri,
           timestamp: moment(+TimestampMs).format(),
         }];
       }
@@ -54,7 +56,7 @@ export const workerActivityUpdateHandler = ({
       return [{
         type: AgentEvents.paused,
         actor: WorkerName,
-        number: WorkerSid,
+        number: contactUri,
         timestamp: moment(+TimestampMs).format(),
       }];
     default:

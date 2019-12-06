@@ -25,6 +25,7 @@ Here is the list of the Task Router's events and their representation as teravoz
 
 * When the Task enters in the wrapup state (task.wrapup event), two Teravoz's events are fired: `call.finished` AND `agent.left`. However, maybe the actor.left event should be fired when the task finishes (task.completed event), because only on the end of the wrapup status the agent will be available again. 
 
+* When a `actor.noanswer` is produced, the `ringtime` is equals to the task age on Twilio's Task Router, not the time that was ringing to the extension that have rejected or not answered the call.
 
 # Missing fields
 

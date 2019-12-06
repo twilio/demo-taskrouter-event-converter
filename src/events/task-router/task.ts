@@ -45,7 +45,7 @@ export const taskCanceledHandler = ({
 };
 
 export const taskWrapupHandler = ({
-  EventType, TaskAttributes, TimestampMs, WorkerName, WorkerSid, TaskQueueSid,
+  EventType, TaskAttributes, TimestampMs, WorkerName, WorkerAttributes, TaskQueueSid,
 }: any): [CallEvent, AgentEvent] => {
   if (EventType !== 'task.wrapup') {
     throw new Error("Only tasks of type 'task.wrapup' can be handled by taskWrapupHandler.");
@@ -54,6 +54,10 @@ export const taskWrapupHandler = ({
   const {
     call_sid: callId, direction, called, from,
   } = JSON.parse(TaskAttributes);
+
+  const {
+    contact_uri: contactUri,
+  } = JSON.parse(WorkerAttributes);
 
   const timestamp = moment(+TimestampMs).format();
   return [
@@ -69,7 +73,7 @@ export const taskWrapupHandler = ({
       type: AgentEvents.left,
       call_id: callId,
       actor: WorkerName,
-      number: WorkerSid,
+      number: contactUri,
       queue: TaskQueueSid,
       timestamp,
     },

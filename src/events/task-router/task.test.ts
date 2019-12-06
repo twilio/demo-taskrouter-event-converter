@@ -71,9 +71,14 @@ describe('Convert task.wrapup', (): void => {
       from: '5511922222222',
     };
 
+    const workerAttr = {
+      contact_uri: 'client:test',
+    };
+
     const input = {
       EventType: 'task.wrapup',
       TaskAttributes: JSON.stringify(taskAttr),
+      WorkerAttributes: JSON.stringify(workerAttr),
       TimestampMs: Date.now(),
       WorkerName: 'TWorker',
       WorkerSid: 'WW123',
@@ -98,7 +103,7 @@ describe('Convert task.wrapup', (): void => {
     expect(agentEvent.type).toBe('actor.left');
     expect(agentEvent.call_id).toBe(taskAttr.call_sid);
     expect(agentEvent.actor).toBe(input.WorkerName);
-    expect(agentEvent.number).toBe(input.WorkerSid);
+    expect(agentEvent.number).toBe(workerAttr.contact_uri);
     expect(agentEvent.queue).toBe(input.TaskQueueSid);
     expect(agentEvent.timestamp).toStrictEqual(expect.any(String));
   });
