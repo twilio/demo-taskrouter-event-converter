@@ -1,4 +1,4 @@
-import { taskCreatedHandler, taskCanceledHandler } from './task';
+import { taskCreatedHandler, taskCanceledHandler, taskWrapupHandler } from './task';
 import { reservationAcceptedHandler } from './reservation';
 import { workerActivityUpdateHandler } from './worker';
 import { taskQueueEnteredHandler } from './task-queue';
@@ -12,6 +12,7 @@ type Handler = (event: any) => TeravozEvent[]
 export const eventsMapping: Record<string, Handler> = {
   'task.created': taskCreatedHandler,
   'task.canceled': taskCanceledHandler,
+  'task.wrapup': taskWrapupHandler,
   'reservation.accepted': reservationAcceptedHandler,
   'worker.activity.update': workerActivityUpdateHandler,
   'task-queue.entered': taskQueueEnteredHandler,

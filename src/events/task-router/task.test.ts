@@ -61,3 +61,45 @@ describe('Convert task.canceled', (): void => {
     expect(timestamp).toStrictEqual(expect.any(String));
   });
 });
+
+describe('Convert task.wrapup', (): void => {
+  test('Should convert task.wrapup to call.finished AND actor.left', (): void => {
+    const taskAttr = {
+      call_sid: 'CA123',
+      direction: 'inbound',
+      called: '5511911111111',
+      from: '5511922222222',
+    };
+
+    const input = {
+      EventType: 'task.wrapup',
+      TaskAttributes: JSON.stringify(taskAttr),
+      TimestampMs: Date.now(),
+      WorkerName: 'TWorker',
+      WorkerSid: 'WW123',
+      TaskQueueSid: 'TQ123',
+    };
+
+    const events = taskRouterEventConverter(input);
+
+    expect(events).not.toBeFalsy();
+    expect(events).toBeInstanceOf(Array);
+    expect(events.length).toBe(2);
+
+    const [callEvent, agentEvent] = events;
+
+    expect(callEvent.type).toBe('call.finished');
+    expect(callEvent.call_id).toBe(taskAttr.call_sid);
+    expect(callEvent.direction).toBe(taskAttr.direction);
+    expect(callEvent.our_number).toBe(taskAttr.called);
+    expect(callEvent.their_number).toBe(taskAttr.from);
+    expect(callEvent.timestamp).toStrictEqual(expect.any(String));
+
+    expect(agentEvent.type).toBe('actor.left');
+    expect(agentEvent.call_id).toBe(taskAttr.call_sid);
+    expect(agentEvent.actor).toBe(input.WorkerName);
+    expect(agentEvent.number).toBe(input.WorkerSid);
+    expect(agentEvent.queue).toBe(input.TaskQueueSid);
+    expect(agentEvent.timestamp).toStrictEqual(expect.any(String));
+  });
+});

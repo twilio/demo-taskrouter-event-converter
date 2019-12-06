@@ -1,5 +1,7 @@
 import moment from 'moment';
-import { CallEvent, CallEvents } from '../teravoz';
+import {
+  CallEvent, CallEvents, AgentEvent, AgentEvents,
+} from '../teravoz';
 
 export const taskCreatedHandler = ({
   EventType, TaskAttributes, TimestampMs,
@@ -38,6 +40,38 @@ export const taskCanceledHandler = ({
       type: CallEvents.queueAbandon,
       call_id: callId,
       timestamp: moment(+TimestampMs).format(),
+    },
+  ];
+};
+
+export const taskWrapupHandler = ({
+  EventType, TaskAttributes, TimestampMs, WorkerName, WorkerSid, TaskQueueSid,
+}: any): [CallEvent, AgentEvent] => {
+  if (EventType !== 'task.wrapup') {
+    throw new Error("Only tasks of type 'task.wrapup' can be handled by taskWrapupHandler.");
+  }
+
+  const {
+    call_sid: callId, direction, called, from,
+  } = JSON.parse(TaskAttributes);
+
+  const timestamp = moment(+TimestampMs).format();
+  return [
+    {
+      type: CallEvents.finished,
+      call_id: callId,
+      direction,
+      our_number: called,
+      their_number: from,
+      timestamp,
+    },
+    {
+      type: AgentEvents.left,
+      call_id: callId,
+      actor: WorkerName,
+      number: WorkerSid,
+      queue: TaskQueueSid,
+      timestamp,
     },
   ];
 };
