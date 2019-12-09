@@ -3,13 +3,18 @@ import { reservationAcceptedHandler, reservationRejectedHandler, reservationCrea
 import { workerActivityUpdateHandler } from './worker';
 import { taskQueueEnteredHandler } from './task-queue';
 import { TeravozEvent } from '../teravoz';
+import { TaskRouterEventTypes } from '../twilio';
 
 type Handler = (event: any) => TeravozEvent[]
+
+type EventsMapping = {
+  [P in TaskRouterEventTypes]?: Handler;
+};
 
 /**
  * EventMapping from TaskRouter to converter handlers
  */
-export const eventsMapping: Record<string, Handler> = {
+export const eventsMapping: EventsMapping = {
   'task.created': taskCreatedHandler,
   'task.canceled': taskCanceledHandler,
   'task.wrapup': taskWrapupHandler,

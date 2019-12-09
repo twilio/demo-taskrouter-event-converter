@@ -1,7 +1,12 @@
 import { eventsMapping } from './events-map';
 import { TeravozEvent } from '../teravoz';
+import { TaskRouterEventTypes } from '../twilio';
 
-export const taskRouterEventConverter = (event: any): TeravozEvent[] => {
+interface IncommingEvent extends Record<string, any> {
+  EventType: TaskRouterEventTypes;
+}
+
+export const taskRouterEventConverter = (event: IncommingEvent): TeravozEvent[] => {
   const mapEvent = eventsMapping[event.EventType];
 
   if (mapEvent) {
