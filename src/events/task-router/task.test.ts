@@ -1,4 +1,4 @@
-import { taskRouterEventConverter } from './index';
+import { taskCreatedHandler, taskCanceledHandler, taskWrapupHandler } from './task';
 
 describe('Convert task.created', (): void => {
   test('Should convert task.created to call.new', (): void => {
@@ -15,7 +15,7 @@ describe('Convert task.created', (): void => {
       TimestampMs: Date.now(),
     };
 
-    const events = taskRouterEventConverter(input);
+    const events = taskCreatedHandler(input);
 
     expect(events).not.toBeFalsy();
     expect(events).toBeInstanceOf(Array);
@@ -32,6 +32,25 @@ describe('Convert task.created', (): void => {
     expect(their_number).toBe(taskAttr.from);
     expect(timestamp).toStrictEqual(expect.any(String));
   });
+
+  test('Should throw an error if the event passed to the handler is different from task.created', (): void => {
+    const taskAttr = {
+      call_sid: 'CA123',
+      direction: 'inbound',
+      called: '5511911111111',
+      from: '5511922222222',
+    };
+
+    const wrongInput = {
+      EventType: 'task.update',
+      TaskAttributes: JSON.stringify(taskAttr),
+      TimestampMs: Date.now(),
+    };
+
+    expect(() => {
+      taskCreatedHandler(wrongInput);
+    }).toThrow();
+  });
 });
 
 describe('Convert task.canceled', (): void => {
@@ -46,7 +65,7 @@ describe('Convert task.canceled', (): void => {
       TimestampMs: Date.now(),
     };
 
-    const events = taskRouterEventConverter(input);
+    const events = taskCanceledHandler(input);
 
     expect(events).not.toBeFalsy();
     expect(events).toBeInstanceOf(Array);
@@ -59,6 +78,22 @@ describe('Convert task.canceled', (): void => {
     expect(type).toBe('call.queue-abandon');
     expect(call_id).toBe(taskAttr.call_sid);
     expect(timestamp).toStrictEqual(expect.any(String));
+  });
+
+  test('Should throw an error if the event passed to the handler is different from task.canceled', (): void => {
+    const taskAttr = {
+      call_sid: 'CA123',
+    };
+
+    const invalidInput = {
+      EventType: 'task.created',
+      TaskAttributes: JSON.stringify(taskAttr),
+      TimestampMs: Date.now(),
+    };
+
+    expect(() => {
+      taskCanceledHandler(invalidInput);
+    }).toThrow();
   });
 });
 
@@ -85,7 +120,7 @@ describe('Convert task.wrapup', (): void => {
       TaskQueueSid: 'TQ123',
     };
 
-    const events = taskRouterEventConverter(input);
+    const events = taskWrapupHandler(input);
 
     expect(events).not.toBeFalsy();
     expect(events).toBeInstanceOf(Array);
@@ -106,5 +141,21 @@ describe('Convert task.wrapup', (): void => {
     expect(agentEvent.number).toBe(workerAttr.contact_uri);
     expect(agentEvent.queue).toBe(input.TaskQueueSid);
     expect(agentEvent.timestamp).toStrictEqual(expect.any(String));
+  });
+
+  test('Should throw an error if the event passed to the handler is different from task.wrapup', (): void => {
+    const taskAttr = {
+      call_sid: 'CA123',
+    };
+
+    const invalidInput = {
+      EventType: 'task.created',
+      TaskAttributes: JSON.stringify(taskAttr),
+      TimestampMs: Date.now(),
+    };
+
+    expect(() => {
+      taskWrapupHandler(invalidInput);
+    }).toThrow();
   });
 });

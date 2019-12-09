@@ -1,4 +1,4 @@
-import { taskRouterEventConverter } from './index';
+import { workerActivityUpdateHandler } from './worker';
 
 const workerAttr = {
   contact_uri: 'client:test',
@@ -24,7 +24,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
-      const events = taskRouterEventConverter(input);
+      const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
       expect(events.length).toBe(0);
@@ -41,7 +41,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
-      const events = taskRouterEventConverter(input);
+      const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
       expect(events.length).toBe(0);
@@ -58,7 +58,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
-      const events = taskRouterEventConverter(input);
+      const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
       expect(events.length).toBe(1);
@@ -80,7 +80,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
-      const events = taskRouterEventConverter(input);
+      const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
       expect(events.length).toBe(1);
@@ -103,7 +103,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
-      const events = taskRouterEventConverter(input);
+      const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
       expect(events.length).toBe(0);
@@ -120,7 +120,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
-      const events = taskRouterEventConverter(input);
+      const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
       expect(events.length).toBe(0);
@@ -137,7 +137,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
-      const events = taskRouterEventConverter(input);
+      const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
       expect(events.length).toBe(1);
@@ -158,7 +158,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
-      const events = taskRouterEventConverter(input);
+      const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
       expect(events.length).toBe(1);
@@ -181,7 +181,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
-      const events = taskRouterEventConverter(input);
+      const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
       expect(events.length).toBe(0);
@@ -198,7 +198,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
-      const events = taskRouterEventConverter(input);
+      const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
       expect(events.length).toBe(1);
@@ -219,7 +219,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
-      const events = taskRouterEventConverter(input);
+      const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
       expect(events.length).toBe(1);
@@ -240,7 +240,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
-      const events = taskRouterEventConverter(input);
+      const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
       expect(events.length).toBe(1);
@@ -263,7 +263,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
-      const events = taskRouterEventConverter(input);
+      const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
       expect(events.length).toBe(0);
@@ -280,7 +280,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
-      const events = taskRouterEventConverter(input);
+      const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
       expect(events.length).toBe(1);
@@ -301,7 +301,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
-      const events = taskRouterEventConverter(input);
+      const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
       expect(events.length).toBe(1);
@@ -322,7 +322,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
-      const events = taskRouterEventConverter(input);
+      const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
       expect(events.length).toBe(1);
@@ -331,5 +331,21 @@ describe('Convert worker.activity.update', () => {
 
       assertEvent(input, event, 'actor.logged-out');
     });
+  });
+
+  test('Should throw an error if the event passed to the handler is different from worker.activity.update', (): void => {
+    const invalidInput = {
+      EventType: 'worker.create',
+      WorkerName: 'test',
+      WorkerSid: 'WW123',
+      WorkerActivityName: 'offline',
+      WorkerPreviousActivityName: 'break',
+      WorkerAttributes: JSON.stringify(workerAttr),
+      TimestampMs: Date.now(),
+    };
+
+    expect(() => {
+      workerActivityUpdateHandler(invalidInput);
+    }).toThrow();
   });
 });

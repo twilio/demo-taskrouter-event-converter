@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { CallEvent, CallEvents } from '../teravoz';
 import { getTime } from '../date';
 
