@@ -1,9 +1,29 @@
-import moment from 'moment';
-
 import {
   AgentEvent, AgentEvents, CallEvent, CallEvents,
 } from '../teravoz';
-import { getTime } from '../date';
+import { getTime } from '../../date';
+
+export const reservationCreatedHandler = ({
+  EventType, TaskAttributes, WorkerName, WorkerAttributes, TaskQueueSid, TimestampMs,
+}: any): [AgentEvent] => {
+  if (EventType !== 'reservation.created') {
+    throw new Error("Only tasks of type 'reservation.created' can be handled by reservationCreatedHandler.");
+  }
+
+  const { call_sid: callId } = JSON.parse(TaskAttributes);
+  const { contact_uri: contactUri } = JSON.parse(WorkerAttributes);
+
+  return [
+    {
+      type: AgentEvents.ringing,
+      call_id: callId,
+      actor: WorkerName,
+      number: contactUri,
+      queue: TaskQueueSid,
+      timestamp: getTime(TimestampMs),
+    },
+  ];
+};
 
 export const reservationAcceptedHandler = ({
   EventType, TaskAttributes, WorkerName, WorkerAttributes, TaskQueueSid, TimestampMs,
@@ -27,7 +47,7 @@ export const reservationAcceptedHandler = ({
       actor: WorkerName,
       number: contactUri,
       queue: TaskQueueSid,
-      timestamp: moment(+TimestampMs).format(),
+      timestamp: getTime(TimestampMs),
     },
     {
       type: CallEvents.ongoing,
@@ -35,7 +55,7 @@ export const reservationAcceptedHandler = ({
       direction,
       our_number: called,
       their_number: from,
-      timestamp: moment(+TimestampMs).format(),
+      timestamp: getTime(TimestampMs),
     },
   ];
 };

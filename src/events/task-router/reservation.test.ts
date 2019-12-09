@@ -1,4 +1,4 @@
-import { reservationAcceptedHandler, reservationRejectedHandler } from './reservation';
+import { reservationAcceptedHandler, reservationRejectedHandler, reservationCreatedHandler } from './reservation';
 
 describe('Convert reservation.accepted', (): void => {
   test('Should convert reservation.accepted to agent.entered and call.ongoing', (): void => {
@@ -140,6 +140,73 @@ describe('Convert reservation.rejected', (): void => {
 
     expect(() => {
       reservationRejectedHandler(invalidInput);
+    }).toThrow();
+  });
+});
+
+describe('Convert reservation.created', (): void => {
+  test('Should convert reservation.created to actor.ringing', (): void => {
+    const taskAttr = {
+      call_sid: 'CA123',
+      direction: 'inbound',
+      called: '5511911111111',
+      from: '5511922222222',
+    };
+
+    const workerAttr = {
+      contact_uri: 'client:test',
+    };
+
+    const input = {
+      EventType: 'reservation.created',
+      TaskAttributes: JSON.stringify(taskAttr),
+      WorkerAttributes: JSON.stringify(workerAttr),
+      WorkerName: 'test',
+      WorkerSid: 'WW123',
+      TaskQueueSid: 'TQ123',
+      TimestampMs: Date.now(),
+    };
+
+    const events = reservationCreatedHandler(input);
+
+    expect(events).not.toBeFalsy();
+    expect(events).toBeInstanceOf(Array);
+    expect(events.length).toBe(1);
+
+    const [actorEvent] = events;
+
+    expect(actorEvent.type).toBe('actor.ringing');
+    expect(actorEvent.call_id).toBe(taskAttr.call_sid);
+    expect(actorEvent.actor).toBe(input.WorkerName);
+    expect(actorEvent.number).toBe(workerAttr.contact_uri);
+    expect(actorEvent.queue).toBe(input.TaskQueueSid);
+    expect(actorEvent.timestamp).toStrictEqual(expect.any(String));
+  });
+
+  test('Should throw an error if the event passed to the handler is different from reservation.created', (): void => {
+    const taskAttr = {
+      call_sid: 'CA123',
+      direction: 'inbound',
+      called: '5511911111111',
+      from: '5511922222222',
+    };
+
+    const workerAttr = {
+      contact_uri: 'client:test',
+    };
+
+    const invalidInput = {
+      EventType: 'reservation.updated',
+      TaskAttributes: JSON.stringify(taskAttr),
+      WorkerAttributes: JSON.stringify(workerAttr),
+      WorkerName: 'test',
+      WorkerSid: 'WW123',
+      TaskQueueSid: 'TQ123',
+      TimestampMs: Date.now(),
+    };
+
+    expect(() => {
+      reservationCreatedHandler(invalidInput);
     }).toThrow();
   });
 });

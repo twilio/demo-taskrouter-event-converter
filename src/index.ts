@@ -1,9 +1,22 @@
 import express from 'express';
 import fetch, { Headers } from 'node-fetch';
+import { IncomingHttpHeaders } from 'http';
 import { logger } from './logger';
 import { taskRouterEventConverter } from './events/task-router';
 
-const getCommonRequestDetails = (req: express.Request) => {
+interface CommonRequestDetails {
+  body: any;
+  headers: IncomingHttpHeaders;
+  method: string;
+  params: Record<string, any>;
+  url: string;
+  query: Record<string, any>;
+  ip?: string | string[];
+  status?: number;
+
+}
+
+const getCommonRequestDetails = (req: express.Request): CommonRequestDetails => {
   const {
     method, statusCode, headers, url, connection, body, params, query,
   } = req;
@@ -20,9 +33,12 @@ const getCommonRequestDetails = (req: express.Request) => {
   };
 };
 
-const requestLogger = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+const requestLogger = (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+): void => {
   logger.info(`Received request to ${req.method} ${req.url}`);
-  logger.debug(getCommonRequestDetails(req));
   next();
 };
 
@@ -36,14 +52,15 @@ const requestLogger = (req: express.Request, res: express.Response, next: expres
   app.post('/webhook', (req, res) => {
     const { body: event } = req;
 
-    logger.info(`POST /webhook: Received ${event.EventType}.`, event);
+    logger.info(`POST /webhook: Received ${event.EventType}.`);
+    logger.debug('Event details: ', event);
     const events = taskRouterEventConverter(event);
 
     if (events && events.length) {
       events.forEach(async (ev: any) => {
         logger.info(`Emitting event converted from ${event.EventType}`, ev);
 
-        const res = await fetch('https://developers-staging.teravoz.com.br/myevents?login=enristaging', {
+        const response = await fetch('https://developers-staging.teravoz.com.br/myevents?login=enristaging', {
           method: 'POST',
           body: JSON.stringify(ev),
           headers: new Headers({
@@ -51,7 +68,7 @@ const requestLogger = (req: express.Request, res: express.Response, next: expres
           }),
         });
 
-        logger.info('Event emitted: ', res);
+        logger.info('Event emitted: ', response);
       });
     } else {
       logger.info(`Event ${event.EventType} not found to convert to Teravoz's event. Ignoring.`);

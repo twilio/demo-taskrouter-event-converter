@@ -1,9 +1,7 @@
-import moment from 'moment';
-
 import {
   CallEvent, CallEvents, AgentEvent, AgentEvents,
 } from '../teravoz';
-import { getTime } from '../date';
+import { getTime } from '../../date';
 
 export const taskCreatedHandler = ({
   EventType, TaskAttributes, TimestampMs,
