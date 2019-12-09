@@ -1,5 +1,5 @@
-import { AgentEvents, AgentEvent } from '../teravoz';
-import { getTime } from '../../date';
+import { AgentEvents, AgentEvent } from '../../teravoz';
+import { getTime } from '../../../date';
 
 export const workerStatus = {
   available: 'available',

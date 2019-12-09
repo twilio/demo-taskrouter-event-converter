@@ -1,4 +1,4 @@
-import { workerActivityUpdateHandler } from './worker';
+import { workerActivityUpdateHandler } from '.';
 
 const workerAttr = {
   contact_uri: 'client:test',

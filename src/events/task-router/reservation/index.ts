@@ -1,7 +1,7 @@
 import {
   AgentEvent, AgentEvents, CallEvent, CallEvents,
-} from '../teravoz';
-import { getTime } from '../../date';
+} from '../../teravoz';
+import { getTime } from '../../../date';
 
 export const reservationCreatedHandler = ({
   EventType, TaskAttributes, WorkerName, WorkerAttributes, TaskQueueSid, TimestampMs,

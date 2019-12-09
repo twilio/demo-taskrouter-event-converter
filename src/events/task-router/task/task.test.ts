@@ -1,4 +1,4 @@
-import { taskCreatedHandler, taskCanceledHandler, taskWrapupHandler } from './task';
+import { taskCreatedHandler, taskCanceledHandler, taskWrapupHandler } from '.';
 
 describe('Convert task.created', (): void => {
   test('Should convert task.created to call.new', (): void => {

@@ -1,4 +1,4 @@
-import { reservationAcceptedHandler, reservationRejectedHandler, reservationCreatedHandler } from './reservation';
+import { reservationAcceptedHandler, reservationRejectedHandler, reservationCreatedHandler } from '.';
 
 describe('Convert reservation.accepted', (): void => {
   test('Should convert reservation.accepted to agent.entered and call.ongoing', (): void => {

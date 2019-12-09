@@ -1,5 +1,5 @@
-import { CallEvent, CallEvents } from '../teravoz';
-import { getTime } from '../../date';
+import { CallEvent, CallEvents } from '../../teravoz';
+import { getTime } from '../../../date';
 
 export const taskQueueEnteredHandler = ({
   EventType,

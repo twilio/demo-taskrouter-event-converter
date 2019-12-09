@@ -1,4 +1,4 @@
-import { taskQueueEnteredHandler } from './task-queue';
+import { taskQueueEnteredHandler } from '.';
 
 describe('Convert task-queue.entered', (): void => {
   test('Should convert task-queue.entered to call.waiting', (): void => {
