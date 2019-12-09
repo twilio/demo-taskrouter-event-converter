@@ -3,6 +3,7 @@ import moment from 'moment';
 import {
   AgentEvent, AgentEvents, CallEvent, CallEvents,
 } from '../teravoz';
+import { getTime } from '../date';
 
 export const reservationAcceptedHandler = ({
   EventType, TaskAttributes, WorkerName, WorkerAttributes, TaskQueueSid, TimestampMs,
@@ -62,7 +63,7 @@ export const reservationRejectedHandler = ({
       number: contactUri,
       queue: TaskQueueSid,
       ringtime: TaskAge,
-      timestamp: moment(+TimestampMs).format(),
+      timestamp: getTime(TimestampMs),
     },
   ];
 };

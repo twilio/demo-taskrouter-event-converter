@@ -1,6 +1,5 @@
-import moment from 'moment';
-
 import { AgentEvents, AgentEvent } from '../teravoz';
+import { getTime } from '../date';
 
 export const workerStatus = {
   available: 'available',
@@ -10,7 +9,12 @@ export const workerStatus = {
 };
 
 export const workerActivityUpdateHandler = ({
-  EventType, WorkerActivityName, WorkerPreviousActivityName, WorkerName, WorkerAttributes, TimestampMs,
+  EventType,
+  WorkerActivityName,
+  WorkerPreviousActivityName,
+  WorkerName,
+  WorkerAttributes,
+  TimestampMs,
 }: any): [AgentEvent] | [] => {
   if (EventType !== 'worker.activity.update') {
     throw new Error("Only tasks of type 'worker.activity.update' can be handled by workerActivityUpdateHandler.");
@@ -29,7 +33,7 @@ export const workerActivityUpdateHandler = ({
           type: AgentEvents.unpaused,
           actor: WorkerName,
           number: contactUri,
-          timestamp: moment(+TimestampMs).format(),
+          timestamp: getTime(TimestampMs),
         }];
       }
 
@@ -37,7 +41,7 @@ export const workerActivityUpdateHandler = ({
         type: AgentEvents.loggedIn,
         actor: WorkerName,
         number: contactUri,
-        timestamp: moment(+TimestampMs).format(),
+        timestamp: getTime(TimestampMs),
       }];
     }
     case workerStatus.unavailable:
@@ -47,7 +51,7 @@ export const workerActivityUpdateHandler = ({
           type: AgentEvents.loggedOut,
           actor: WorkerName,
           number: contactUri,
-          timestamp: moment(+TimestampMs).format(),
+          timestamp: getTime(TimestampMs),
         }];
       }
 
@@ -57,7 +61,7 @@ export const workerActivityUpdateHandler = ({
         type: AgentEvents.paused,
         actor: WorkerName,
         number: contactUri,
-        timestamp: moment(+TimestampMs).format(),
+        timestamp: getTime(TimestampMs),
       }];
     default:
       return [];

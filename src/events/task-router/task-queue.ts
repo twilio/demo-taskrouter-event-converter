@@ -1,5 +1,6 @@
 import moment from 'moment';
 import { CallEvent, CallEvents } from '../teravoz';
+import { getTime } from '../date';
 
 export const taskQueueEnteredHandler = ({
   EventType,
@@ -23,7 +24,7 @@ export const taskQueueEnteredHandler = ({
       our_number: called,
       their_number: from,
       queue: TaskQueueSid,
-      timestamp: moment(+TimestampMs).format(),
+      timestamp: getTime(TimestampMs),
     },
   ];
 };

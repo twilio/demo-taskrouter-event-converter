@@ -1,7 +1,9 @@
 import moment from 'moment';
+
 import {
   CallEvent, CallEvents, AgentEvent, AgentEvents,
 } from '../teravoz';
+import { getTime } from '../date';
 
 export const taskCreatedHandler = ({
   EventType, TaskAttributes, TimestampMs,
@@ -21,7 +23,7 @@ export const taskCreatedHandler = ({
       direction,
       our_number: called,
       their_number: from,
-      timestamp: moment(+TimestampMs).format(),
+      timestamp: getTime(TimestampMs),
     },
   ];
 };
@@ -39,7 +41,7 @@ export const taskCanceledHandler = ({
     {
       type: CallEvents.queueAbandon,
       call_id: callId,
-      timestamp: moment(+TimestampMs).format(),
+      timestamp: getTime(TimestampMs),
     },
   ];
 };
@@ -59,7 +61,8 @@ export const taskWrapupHandler = ({
     contact_uri: contactUri,
   } = JSON.parse(WorkerAttributes);
 
-  const timestamp = moment(+TimestampMs).format();
+  const timestamp = getTime(TimestampMs);
+
   return [
     {
       type: CallEvents.finished,
