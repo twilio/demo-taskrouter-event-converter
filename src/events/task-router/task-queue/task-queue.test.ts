@@ -17,6 +17,7 @@ describe('Convert task-queue.entered', (): void => {
       TimestampMs: Date.now(),
     };
 
+    // @ts-ignore
     const events = taskQueueEnteredHandler(input);
 
     expect(events).not.toBeFalsy();
@@ -51,6 +52,7 @@ describe('Convert task-queue.entered', (): void => {
     };
 
     expect(() => {
+      // @ts-ignore
       taskQueueEnteredHandler(invalidInput);
     }).toThrow();
   });

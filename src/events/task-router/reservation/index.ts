@@ -2,12 +2,21 @@ import {
   AgentEvent, AgentEvents, CallEvent, CallEvents,
 } from '../../teravoz';
 import { getTime } from '../../../date';
+import { TaskRouterEvent } from '../../twilio';
 
 export const reservationCreatedHandler = ({
   EventType, TaskAttributes, WorkerName, WorkerAttributes, TaskQueueSid, TimestampMs,
-}: any): [AgentEvent] => {
+}: TaskRouterEvent): [AgentEvent] => {
   if (EventType !== 'reservation.created') {
     throw new Error("Only tasks of type 'reservation.created' can be handled by reservationCreatedHandler.");
+  }
+
+  if (!TaskAttributes) {
+    throw new Error("Missing TaskAttributes in 'reservation.created' event.");
+  }
+
+  if (!WorkerAttributes) {
+    throw new Error("Missing WorkerAttributes in 'reservation.created' event.");
   }
 
   const { call_sid: callId } = JSON.parse(TaskAttributes);
@@ -17,7 +26,7 @@ export const reservationCreatedHandler = ({
     {
       type: AgentEvents.ringing,
       call_id: callId,
-      actor: WorkerName,
+      actor: WorkerName || '',
       number: contactUri,
       queue: TaskQueueSid,
       timestamp: getTime(TimestampMs),
@@ -27,9 +36,17 @@ export const reservationCreatedHandler = ({
 
 export const reservationAcceptedHandler = ({
   EventType, TaskAttributes, WorkerName, WorkerAttributes, TaskQueueSid, TimestampMs,
-}: any): [AgentEvent, CallEvent] => {
+}: TaskRouterEvent): [AgentEvent, CallEvent] => {
   if (EventType !== 'reservation.accepted') {
     throw new Error("Only tasks of type 'reservation.accepted' can be handled by reservationAcceptedHandler.");
+  }
+
+  if (!TaskAttributes) {
+    throw new Error("Missing TaskAttributes in 'reservation.accepted' event ");
+  }
+
+  if (!WorkerAttributes) {
+    throw new Error("Missing WorkerAttributes in 'reservation.accepted' event ");
   }
 
   const {
@@ -44,7 +61,7 @@ export const reservationAcceptedHandler = ({
     {
       type: AgentEvents.entered,
       call_id: callId,
-      actor: WorkerName,
+      actor: WorkerName || '',
       number: contactUri,
       queue: TaskQueueSid,
       timestamp: getTime(TimestampMs),
@@ -62,9 +79,17 @@ export const reservationAcceptedHandler = ({
 
 export const reservationRejectedHandler = ({
   EventType, TaskAttributes, WorkerAttributes, WorkerName, TaskAge, TaskQueueSid, TimestampMs,
-}: any): [AgentEvent] => {
+}: TaskRouterEvent): [AgentEvent] => {
   if (EventType !== 'reservation.rejected') {
     throw new Error("Only tasks of type 'reservation.rejected' can be handled by reservationRejectedHandler.");
+  }
+
+  if (!TaskAttributes) {
+    throw new Error("Missing TaskAttributes in 'reservation.rejected' event ");
+  }
+
+  if (!WorkerAttributes) {
+    throw new Error("Missing WorkerAttributes in 'reservation.rejected' event ");
   }
 
   const {
@@ -79,10 +104,10 @@ export const reservationRejectedHandler = ({
     {
       type: AgentEvents.noanswer,
       call_id: callId,
-      actor: WorkerName,
+      actor: WorkerName || '',
       number: contactUri,
       queue: TaskQueueSid,
-      ringtime: TaskAge,
+      ringtime: (TaskAge && +TaskAge) || 0,
       timestamp: getTime(TimestampMs),
     },
   ];

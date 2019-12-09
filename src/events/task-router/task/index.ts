@@ -2,12 +2,17 @@ import {
   CallEvent, CallEvents, AgentEvent, AgentEvents,
 } from '../../teravoz';
 import { getTime } from '../../../date';
+import { TaskRouterEvent } from '../../twilio';
 
 export const taskCreatedHandler = ({
   EventType, TaskAttributes, TimestampMs,
-}: any): [CallEvent] => {
+}: TaskRouterEvent): [CallEvent] => {
   if (EventType !== 'task.created') {
     throw new Error("Only tasks of type 'task.created' can be handled by taskCreatedHandler.");
+  }
+
+  if (!TaskAttributes) {
+    throw new Error("Missing TaskAttributes in 'task.created' event.");
   }
 
   const {
@@ -28,9 +33,13 @@ export const taskCreatedHandler = ({
 
 export const taskCanceledHandler = ({
   EventType, TaskAttributes, TimestampMs,
-}: any): CallEvent[] => {
+}: TaskRouterEvent): CallEvent[] => {
   if (EventType !== 'task.canceled') {
     throw new Error("Only tasks of type 'task.canceled' can be handled by taskCanceledhandler.");
+  }
+
+  if (!TaskAttributes) {
+    throw new Error("Missing TaskAttributes in 'task.canceled' event.");
   }
 
   const { call_sid: callId } = JSON.parse(TaskAttributes);
@@ -46,9 +55,17 @@ export const taskCanceledHandler = ({
 
 export const taskWrapupHandler = ({
   EventType, TaskAttributes, TimestampMs, WorkerName, WorkerAttributes, TaskQueueSid,
-}: any): [CallEvent, AgentEvent] => {
+}: TaskRouterEvent): [CallEvent, AgentEvent] => {
   if (EventType !== 'task.wrapup') {
     throw new Error("Only tasks of type 'task.wrapup' can be handled by taskWrapupHandler.");
+  }
+
+  if (!TaskAttributes) {
+    throw new Error("Missing TaskAttributes in 'task.wrapup' event.");
+  }
+
+  if (!WorkerAttributes) {
+    throw new Error("Missing WorkerAttributes in 'task.wrapup' event.");
   }
 
   const {
@@ -73,7 +90,7 @@ export const taskWrapupHandler = ({
     {
       type: AgentEvents.left,
       call_id: callId,
-      actor: WorkerName,
+      actor: WorkerName || '',
       number: contactUri,
       queue: TaskQueueSid,
       timestamp,

@@ -15,6 +15,7 @@ describe('Convert task.created', (): void => {
       TimestampMs: Date.now(),
     };
 
+    // @ts-ignore
     const events = taskCreatedHandler(input);
 
     expect(events).not.toBeFalsy();
@@ -48,6 +49,7 @@ describe('Convert task.created', (): void => {
     };
 
     expect(() => {
+      // @ts-ignore
       taskCreatedHandler(wrongInput);
     }).toThrow();
   });
@@ -65,6 +67,7 @@ describe('Convert task.canceled', (): void => {
       TimestampMs: Date.now(),
     };
 
+    // @ts-ignore
     const events = taskCanceledHandler(input);
 
     expect(events).not.toBeFalsy();
@@ -92,6 +95,7 @@ describe('Convert task.canceled', (): void => {
     };
 
     expect(() => {
+      // @ts-ignore
       taskCanceledHandler(invalidInput);
     }).toThrow();
   });
@@ -120,6 +124,7 @@ describe('Convert task.wrapup', (): void => {
       TaskQueueSid: 'TQ123',
     };
 
+    // @ts-ignore
     const events = taskWrapupHandler(input);
 
     expect(events).not.toBeFalsy();
@@ -155,6 +160,7 @@ describe('Convert task.wrapup', (): void => {
     };
 
     expect(() => {
+      // @ts-ignore
       taskWrapupHandler(invalidInput);
     }).toThrow();
   });

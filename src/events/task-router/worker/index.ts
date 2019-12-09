@@ -1,5 +1,6 @@
 import { AgentEvents, AgentEvent } from '../../teravoz';
 import { getTime } from '../../../date';
+import { TaskRouterEvent } from '../../twilio';
 
 export const workerStatus = {
   available: 'available',
@@ -15,9 +16,17 @@ export const workerActivityUpdateHandler = ({
   WorkerName,
   WorkerAttributes,
   TimestampMs,
-}: any): [AgentEvent] | [] => {
+}: TaskRouterEvent): [AgentEvent] | [] => {
   if (EventType !== 'worker.activity.update') {
     throw new Error("Only tasks of type 'worker.activity.update' can be handled by workerActivityUpdateHandler.");
+  }
+
+  if (!WorkerAttributes) {
+    throw new Error("Missing WorkerAttributes in 'worker.activity.update' event.");
+  }
+
+  if (!WorkerActivityName) {
+    throw new Error("Missing WorkerActivityName in 'worker.activity.update' event.");
   }
 
   if (WorkerPreviousActivityName === WorkerActivityName) {
@@ -26,12 +35,12 @@ export const workerActivityUpdateHandler = ({
 
   const { contact_uri: contactUri } = JSON.parse(WorkerAttributes);
 
-  switch (WorkerActivityName.toLowerCase()) {
+  switch (WorkerActivityName) {
     case workerStatus.available: {
       if (WorkerPreviousActivityName === workerStatus.break) {
         return [{
           type: AgentEvents.unpaused,
-          actor: WorkerName,
+          actor: WorkerName || '',
           number: contactUri,
           timestamp: getTime(TimestampMs),
         }];
@@ -39,17 +48,18 @@ export const workerActivityUpdateHandler = ({
 
       return [{
         type: AgentEvents.loggedIn,
-        actor: WorkerName,
+        actor: WorkerName || '',
         number: contactUri,
         timestamp: getTime(TimestampMs),
       }];
     }
     case workerStatus.unavailable:
     case workerStatus.offline:
-      if (WorkerPreviousActivityName.toLowerCase() !== workerStatus.unavailable) {
+      if (WorkerPreviousActivityName
+          && WorkerPreviousActivityName.toLowerCase() !== workerStatus.unavailable) {
         return [{
           type: AgentEvents.loggedOut,
-          actor: WorkerName,
+          actor: WorkerName || '',
           number: contactUri,
           timestamp: getTime(TimestampMs),
         }];
@@ -59,7 +69,7 @@ export const workerActivityUpdateHandler = ({
     case workerStatus.break:
       return [{
         type: AgentEvents.paused,
-        actor: WorkerName,
+        actor: WorkerName || '',
         number: contactUri,
         timestamp: getTime(TimestampMs),
       }];

@@ -36,6 +36,9 @@ module.exports = {
         "files": ["**/*.test.ts"],
         "env": {
           "jest": true
+        },
+        "rules": {
+          "@typescript-eslint/ban-ts-ignore": 0
         }
       }
     ]

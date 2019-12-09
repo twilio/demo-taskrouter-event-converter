@@ -38,3 +38,51 @@ export enum TaskRouterEventTypes {
   workerChannelAvailabilityUpdate = 'worker.channel.availability.update',
   workerDeleted = 'worker.deleted'
 }
+
+export interface TaskEventFields {
+  TaskSid?: string;
+  TaskAttributes?: string;
+  TaskAge?: string;
+  TaskPriority?: string;
+  TaskAssignmentStatus?: string;
+  TaskCanceledReason?: string;
+  TaskCompletedReason?: string;
+}
+
+export interface WorkerEventFields {
+  WorkerSid?: string;
+  WorkerName?: string;
+  WorkerAttributes?: string;
+  WorkerActivitySid?: string;
+  WorkerActivityName?: string;
+  /* Worker's activity changing fields */
+  WorkerTimeInPreviousActivity?: string;
+  WorkerTimeInPreviousActivityMs?: string;
+  WorkerPreviousActivitySid?: string;
+  WorkerPreviousActivityName?: string;
+  /* Worker's configured channel capacity/availability changing fields */
+  WorkerChannelAvailable?: string;
+  WorkerChannelAvailableCapacity?: string;
+  WorkerChannelPreviousCapacity?: string;
+  TaskChannelSid?: string;
+  TaskChannelUniqueName?: string;
+  WorkerChannelTaskCount?: string;
+}
+
+export interface TaskQueueFields {
+  TaskQueueSid?: string;
+  TaskQueueName?: string;
+  TaskQueueExpression?: string;
+}
+
+export interface TaskRouterEvent extends TaskEventFields, WorkerEventFields, TaskQueueFields {
+  EventType: TaskRouterEventTypes;
+  AccountSid: string;
+  WorkspaceSid: string;
+  WorkspaceName: string;
+  EventDescription: string;
+  ResourceType: 'task' | 'reservation' | 'worker';
+  ResourceSid: string;
+  Timestamp: string | number;
+  TimestampMs: string | number;
+}

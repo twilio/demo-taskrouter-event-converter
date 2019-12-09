@@ -24,6 +24,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
+      // @ts-ignore
       const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
@@ -41,6 +42,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
+      // @ts-ignore
       const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
@@ -58,6 +60,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
+      // @ts-ignore
       const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
@@ -80,6 +83,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
+      // @ts-ignore
       const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
@@ -103,6 +107,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
+      // @ts-ignore
       const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
@@ -120,6 +125,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
+      // @ts-ignore
       const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
@@ -137,6 +143,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
+      // @ts-ignore
       const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
@@ -158,6 +165,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
+      // @ts-ignore
       const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
@@ -181,6 +189,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
+      // @ts-ignore
       const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
@@ -198,6 +207,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
+      // @ts-ignore
       const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
@@ -219,6 +229,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
+      // @ts-ignore
       const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
@@ -240,6 +251,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
+      // @ts-ignore
       const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
@@ -263,6 +275,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
+      // @ts-ignore
       const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
@@ -280,6 +293,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
+      // @ts-ignore
       const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
@@ -301,6 +315,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
+      // @ts-ignore
       const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
@@ -322,6 +337,7 @@ describe('Convert worker.activity.update', () => {
         TimestampMs: Date.now(),
       };
 
+      // @ts-ignore
       const events = workerActivityUpdateHandler(input);
       expect(events).not.toBeFalsy();
       expect(events).toBeInstanceOf(Array);
@@ -345,6 +361,7 @@ describe('Convert worker.activity.update', () => {
     };
 
     expect(() => {
+      // @ts-ignore
       workerActivityUpdateHandler(invalidInput);
     }).toThrow();
   });

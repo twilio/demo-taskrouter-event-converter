@@ -1,4 +1,5 @@
 import { reservationAcceptedHandler, reservationRejectedHandler, reservationCreatedHandler } from '.';
+import { TaskRouterEventTypes } from '../../twilio';
 
 describe('Convert reservation.accepted', (): void => {
   test('Should convert reservation.accepted to agent.entered and call.ongoing', (): void => {
@@ -14,7 +15,7 @@ describe('Convert reservation.accepted', (): void => {
     };
 
     const input = {
-      EventType: 'reservation.accepted',
+      EventType: TaskRouterEventTypes.reservationAccepted,
       TaskAttributes: JSON.stringify(taskAttr),
       WorkerAttributes: JSON.stringify(workerAttr),
       WorkerName: 'test',
@@ -23,6 +24,7 @@ describe('Convert reservation.accepted', (): void => {
       TimestampMs: Date.now(),
     };
 
+    // @ts-ignore
     const events = reservationAcceptedHandler(input);
 
     expect(events).not.toBeFalsy();
@@ -69,6 +71,7 @@ describe('Convert reservation.accepted', (): void => {
     };
 
     expect(() => {
+      // @ts-ignore
       reservationAcceptedHandler(invalidInput);
     }).toThrow();
   });
@@ -94,10 +97,11 @@ describe('Convert reservation.rejected', (): void => {
       WorkerName: 'test',
       WorkerSid: 'WW123',
       TaskQueueSid: 'TQ123',
-      TaskAge: '42',
+      TaskAge: 42,
       TimestampMs: Date.now(),
     };
 
+    // @ts-ignore
     const events = reservationRejectedHandler(input);
 
     expect(events).not.toBeFalsy();
@@ -139,6 +143,7 @@ describe('Convert reservation.rejected', (): void => {
     };
 
     expect(() => {
+      // @ts-ignore
       reservationRejectedHandler(invalidInput);
     }).toThrow();
   });
@@ -167,6 +172,7 @@ describe('Convert reservation.created', (): void => {
       TimestampMs: Date.now(),
     };
 
+    // @ts-ignore
     const events = reservationCreatedHandler(input);
 
     expect(events).not.toBeFalsy();
@@ -206,6 +212,7 @@ describe('Convert reservation.created', (): void => {
     };
 
     expect(() => {
+      // @ts-ignore
       reservationCreatedHandler(invalidInput);
     }).toThrow();
   });
