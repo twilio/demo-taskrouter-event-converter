@@ -5,7 +5,7 @@ import { getTime } from '../../../date';
 import { TaskRouterEvent } from '../../twilio';
 
 export const taskCreatedHandler = ({
-  EventType, TaskAttributes, TimestampMs,
+  Sid, EventType, TaskAttributes, TimestampMs,
 }: TaskRouterEvent): [CallEvent] => {
   if (EventType !== 'task.created') {
     throw new Error("Only tasks of type 'task.created' can be handled by taskCreatedHandler.");
@@ -27,12 +27,13 @@ export const taskCreatedHandler = ({
       our_number: called,
       their_number: from,
       timestamp: getTime(TimestampMs),
+      sid: Sid,
     },
   ];
 };
 
 export const taskCanceledHandler = ({
-  EventType, TaskAttributes, TimestampMs,
+  Sid, EventType, TaskAttributes, TimestampMs,
 }: TaskRouterEvent): CallEvent[] => {
   if (EventType !== 'task.canceled') {
     throw new Error("Only tasks of type 'task.canceled' can be handled by taskCanceledhandler.");
@@ -49,12 +50,13 @@ export const taskCanceledHandler = ({
       type: CallEvents.queueAbandon,
       call_id: callId,
       timestamp: getTime(TimestampMs),
+      sid: Sid,
     },
   ];
 };
 
 export const taskWrapupHandler = ({
-  EventType, TaskAttributes, TimestampMs, WorkerName, WorkerAttributes, TaskQueueSid,
+  Sid, EventType, TaskAttributes, TimestampMs, WorkerName, WorkerAttributes, TaskQueueSid,
 }: TaskRouterEvent): [CallEvent, AgentEvent] => {
   if (EventType !== 'task.wrapup') {
     throw new Error("Only tasks of type 'task.wrapup' can be handled by taskWrapupHandler.");
@@ -86,6 +88,7 @@ export const taskWrapupHandler = ({
       our_number: called,
       their_number: from,
       timestamp,
+      sid: Sid,
     },
     {
       type: AgentEvents.left,
@@ -94,6 +97,7 @@ export const taskWrapupHandler = ({
       number: contactUri,
       queue: TaskQueueSid,
       timestamp,
+      sid: Sid,
     },
   ];
 };

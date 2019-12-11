@@ -9,6 +9,7 @@ const assertEvent = (input: any, event: any, expectedEv: string): void => {
   expect(event.actor).toBe(input.WorkerName);
   expect(event.number).toBe(workerAttr.contact_uri);
   expect(event.timestamp).toStrictEqual(expect.any(String));
+  expect(event.sid).toBe(input.Sid);
 };
 
 describe('Convert worker.activity.update', () => {
@@ -22,6 +23,7 @@ describe('Convert worker.activity.update', () => {
         WorkerPreviousActivityName: 'offline',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
+        Sid: 'EV123',
       };
 
       // @ts-ignore
@@ -40,6 +42,7 @@ describe('Convert worker.activity.update', () => {
         WorkerPreviousActivityName: 'offline',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
+        Sid: 'EV123',
       };
 
       // @ts-ignore
@@ -58,6 +61,7 @@ describe('Convert worker.activity.update', () => {
         WorkerPreviousActivityName: 'offline',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
+        Sid: 'EV123',
       };
 
       // @ts-ignore
@@ -81,6 +85,7 @@ describe('Convert worker.activity.update', () => {
         WorkerPreviousActivityName: 'offline',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
+        Sid: 'EV123',
       };
 
       // @ts-ignore
@@ -105,6 +110,7 @@ describe('Convert worker.activity.update', () => {
         WorkerPreviousActivityName: 'unavailable',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
+        Sid: 'EV123',
       };
 
       // @ts-ignore
@@ -141,6 +147,7 @@ describe('Convert worker.activity.update', () => {
         WorkerPreviousActivityName: 'unavailable',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
+        Sid: 'EV123',
       };
 
       // @ts-ignore
@@ -163,6 +170,7 @@ describe('Convert worker.activity.update', () => {
         WorkerPreviousActivityName: 'unavailable',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
+        Sid: 'EV123',
       };
 
       // @ts-ignore
@@ -187,6 +195,7 @@ describe('Convert worker.activity.update', () => {
         WorkerPreviousActivityName: 'available',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
+        Sid: 'EV123',
       };
 
       // @ts-ignore
@@ -205,6 +214,7 @@ describe('Convert worker.activity.update', () => {
         WorkerPreviousActivityName: 'available',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
+        Sid: 'EV123',
       };
 
       // @ts-ignore
@@ -227,6 +237,7 @@ describe('Convert worker.activity.update', () => {
         WorkerPreviousActivityName: 'available',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
+        Sid: 'EV123',
       };
 
       // @ts-ignore
@@ -249,6 +260,7 @@ describe('Convert worker.activity.update', () => {
         WorkerPreviousActivityName: 'available',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
+        Sid: 'EV123',
       };
 
       // @ts-ignore
@@ -273,6 +285,7 @@ describe('Convert worker.activity.update', () => {
         WorkerPreviousActivityName: 'break',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
+        Sid: 'EV123',
       };
 
       // @ts-ignore
@@ -291,6 +304,7 @@ describe('Convert worker.activity.update', () => {
         WorkerPreviousActivityName: 'break',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
+        Sid: 'EV123',
       };
 
       // @ts-ignore
@@ -313,6 +327,7 @@ describe('Convert worker.activity.update', () => {
         WorkerPreviousActivityName: 'break',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
+        Sid: 'EV123',
       };
 
       // @ts-ignore
@@ -335,6 +350,7 @@ describe('Convert worker.activity.update', () => {
         WorkerPreviousActivityName: 'break',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
+        Sid: 'EV123',
       };
 
       // @ts-ignore
@@ -358,6 +374,7 @@ describe('Convert worker.activity.update', () => {
       WorkerPreviousActivityName: 'break',
       WorkerAttributes: JSON.stringify(workerAttr),
       TimestampMs: Date.now(),
+      Sid: 'EV123',
     };
 
     expect(() => {

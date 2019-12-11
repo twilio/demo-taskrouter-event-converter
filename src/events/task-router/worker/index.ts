@@ -16,6 +16,7 @@ export const workerActivityUpdateHandler = ({
   WorkerName,
   WorkerAttributes,
   TimestampMs,
+  Sid,
 }: TaskRouterEvent): [AgentEvent] | [] => {
   if (EventType !== 'worker.activity.update') {
     throw new Error("Only tasks of type 'worker.activity.update' can be handled by workerActivityUpdateHandler.");
@@ -43,6 +44,7 @@ export const workerActivityUpdateHandler = ({
           actor: WorkerName || '',
           number: contactUri,
           timestamp: getTime(TimestampMs),
+          sid: Sid,
         }];
       }
 
@@ -51,6 +53,7 @@ export const workerActivityUpdateHandler = ({
         actor: WorkerName || '',
         number: contactUri,
         timestamp: getTime(TimestampMs),
+        sid: Sid,
       }];
     }
     case workerStatus.unavailable:
@@ -62,6 +65,7 @@ export const workerActivityUpdateHandler = ({
           actor: WorkerName || '',
           number: contactUri,
           timestamp: getTime(TimestampMs),
+          sid: Sid,
         }];
       }
 
@@ -72,6 +76,7 @@ export const workerActivityUpdateHandler = ({
         actor: WorkerName || '',
         number: contactUri,
         timestamp: getTime(TimestampMs),
+        sid: Sid,
       }];
     default:
       return [];

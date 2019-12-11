@@ -15,6 +15,7 @@ describe('Convert task-queue.entered', (): void => {
       TaskQueueSid: 'TQ123',
       TaskQueueName: 'Queue 900',
       TimestampMs: Date.now(),
+      Sid: 'EV123',
     };
 
     // @ts-ignore
@@ -33,6 +34,7 @@ describe('Convert task-queue.entered', (): void => {
     expect(queueEvent.their_number).toBe(taskAttr.from);
     expect(queueEvent.queue).toBe(input.TaskQueueSid);
     expect(queueEvent.timestamp).toStrictEqual(expect.any(String));
+    expect(queueEvent.sid).toBe(input.Sid);
   });
 
   test('Should throw an error if the event passed to the handler is different from task-queue.entered', (): void => {
@@ -49,6 +51,7 @@ describe('Convert task-queue.entered', (): void => {
       TaskQueueSid: 'TQ123',
       TaskQueueName: 'Queue 900',
       TimestampMs: Date.now(),
+      Sid: 'EV123',
     };
 
     expect(() => {

@@ -3,6 +3,7 @@ import { getTime } from '../../../date';
 import { TaskRouterEvent } from '../../twilio';
 
 export const taskQueueEnteredHandler = ({
+  Sid,
   EventType,
   TaskAttributes,
   TaskQueueSid,
@@ -29,6 +30,7 @@ export const taskQueueEnteredHandler = ({
       their_number: from,
       queue: TaskQueueSid,
       timestamp: getTime(TimestampMs),
+      sid: Sid,
     },
   ];
 };

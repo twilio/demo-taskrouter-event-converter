@@ -16,6 +16,7 @@ export const userInputNpsHandler = ({
       nps: Digits,
       data: Digits,
       timestamp: getTime(TimestampMs),
+      sid: '',
     },
   ];
 };

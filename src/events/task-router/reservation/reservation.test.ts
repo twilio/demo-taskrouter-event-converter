@@ -22,6 +22,7 @@ describe('Convert reservation.accepted', (): void => {
       WorkerSid: 'WW123',
       TaskQueueSid: 'TQ123',
       TimestampMs: Date.now(),
+      Sid: 'EV123',
     };
 
     // @ts-ignore
@@ -39,6 +40,7 @@ describe('Convert reservation.accepted', (): void => {
     expect(actorEvent.number).toBe(workerAttr.contact_uri);
     expect(actorEvent.queue).toBe(input.TaskQueueSid);
     expect(actorEvent.timestamp).toStrictEqual(expect.any(String));
+    expect(actorEvent.sid).toBe(input.Sid);
 
     expect(callEvent.type).toBe('call.ongoing');
     expect(callEvent.call_id).toBe(taskAttr.call_sid);
@@ -46,6 +48,7 @@ describe('Convert reservation.accepted', (): void => {
     expect(callEvent.our_number).toBe(taskAttr.called);
     expect(callEvent.their_number).toBe(taskAttr.from);
     expect(callEvent.timestamp).toStrictEqual(expect.any(String));
+    expect(callEvent.sid).toBe(input.Sid);
   });
 
   test('Should throw an error if the event passed to the handler is different from reservation.accepted', (): void => {
@@ -99,6 +102,7 @@ describe('Convert reservation.rejected', (): void => {
       TaskQueueSid: 'TQ123',
       TaskAge: 42,
       TimestampMs: Date.now(),
+      Sid: 'EV123',
     };
 
     // @ts-ignore
@@ -117,6 +121,7 @@ describe('Convert reservation.rejected', (): void => {
     expect(event.queue).toBe(input.TaskQueueSid);
     expect(event.call_id).toBe(taskAttr.call_sid);
     expect(event.timestamp).toStrictEqual(expect.any(String));
+    expect(event.sid).toBe(input.Sid);
   });
 
   test('Should throw an error if the event passed to the handler is different from actor.noanswer', (): void => {
@@ -140,6 +145,7 @@ describe('Convert reservation.rejected', (): void => {
       TaskQueueSid: 'TQ123',
       TaskAge: '42',
       TimestampMs: Date.now(),
+      Sid: 'EV123',
     };
 
     expect(() => {
@@ -170,6 +176,7 @@ describe('Convert reservation.created', (): void => {
       WorkerSid: 'WW123',
       TaskQueueSid: 'TQ123',
       TimestampMs: Date.now(),
+      Sid: 'EV123',
     };
 
     // @ts-ignore
@@ -187,6 +194,7 @@ describe('Convert reservation.created', (): void => {
     expect(actorEvent.number).toBe(workerAttr.contact_uri);
     expect(actorEvent.queue).toBe(input.TaskQueueSid);
     expect(actorEvent.timestamp).toStrictEqual(expect.any(String));
+    expect(actorEvent.sid).toBe(input.Sid);
   });
 
   test('Should throw an error if the event passed to the handler is different from reservation.created', (): void => {

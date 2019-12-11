@@ -76,6 +76,7 @@ export interface TaskQueueFields {
 }
 
 export interface TaskRouterEvent extends TaskEventFields, WorkerEventFields, TaskQueueFields {
+  Sid: string;
   EventType: TaskRouterEventTypes;
   AccountSid: string;
   WorkspaceSid: string;

@@ -13,6 +13,7 @@ describe('Convert task.created', (): void => {
       EventType: 'task.created',
       TaskAttributes: JSON.stringify(taskAttr),
       TimestampMs: Date.now(),
+      Sid: 'EV123',
     };
 
     // @ts-ignore
@@ -23,7 +24,7 @@ describe('Convert task.created', (): void => {
     expect(events.length).toBe(1);
 
     const [{
-      type, call_id, direction, our_number, their_number, timestamp,
+      type, call_id, direction, our_number, their_number, timestamp, sid,
     }] = events;
 
     expect(type).toBe('call.new');
@@ -32,6 +33,7 @@ describe('Convert task.created', (): void => {
     expect(our_number).toBe(taskAttr.called);
     expect(their_number).toBe(taskAttr.from);
     expect(timestamp).toStrictEqual(expect.any(String));
+    expect(sid).toBe(input.Sid);
   });
 
   test('Should throw an error if the event passed to the handler is different from task.created', (): void => {
@@ -46,6 +48,7 @@ describe('Convert task.created', (): void => {
       EventType: 'task.update',
       TaskAttributes: JSON.stringify(taskAttr),
       TimestampMs: Date.now(),
+      Sid: 'EV123',
     };
 
     expect(() => {
@@ -65,6 +68,7 @@ describe('Convert task.canceled', (): void => {
       EventType: 'task.canceled',
       TaskAttributes: JSON.stringify(taskAttr),
       TimestampMs: Date.now(),
+      Sid: 'EV123',
     };
 
     // @ts-ignore
@@ -75,12 +79,13 @@ describe('Convert task.canceled', (): void => {
     expect(events.length).toBe(1);
 
     const [{
-      type, call_id, timestamp,
+      type, call_id, timestamp, sid,
     }] = events;
 
     expect(type).toBe('call.queue-abandon');
     expect(call_id).toBe(taskAttr.call_sid);
     expect(timestamp).toStrictEqual(expect.any(String));
+    expect(sid).toBe(input.Sid);
   });
 
   test('Should throw an error if the event passed to the handler is different from task.canceled', (): void => {
@@ -92,6 +97,7 @@ describe('Convert task.canceled', (): void => {
       EventType: 'task.created',
       TaskAttributes: JSON.stringify(taskAttr),
       TimestampMs: Date.now(),
+      Sid: 'EV123',
     };
 
     expect(() => {
@@ -122,6 +128,7 @@ describe('Convert task.wrapup', (): void => {
       WorkerName: 'TWorker',
       WorkerSid: 'WW123',
       TaskQueueSid: 'TQ123',
+      Sid: 'EV123',
     };
 
     // @ts-ignore
@@ -139,6 +146,7 @@ describe('Convert task.wrapup', (): void => {
     expect(callEvent.our_number).toBe(taskAttr.called);
     expect(callEvent.their_number).toBe(taskAttr.from);
     expect(callEvent.timestamp).toStrictEqual(expect.any(String));
+    expect(callEvent.sid).toBe(input.Sid);
 
     expect(agentEvent.type).toBe('actor.left');
     expect(agentEvent.call_id).toBe(taskAttr.call_sid);
@@ -146,6 +154,7 @@ describe('Convert task.wrapup', (): void => {
     expect(agentEvent.number).toBe(workerAttr.contact_uri);
     expect(agentEvent.queue).toBe(input.TaskQueueSid);
     expect(agentEvent.timestamp).toStrictEqual(expect.any(String));
+    expect(agentEvent.sid).toBe(input.Sid);
   });
 
   test('Should throw an error if the event passed to the handler is different from task.wrapup', (): void => {
@@ -157,6 +166,7 @@ describe('Convert task.wrapup', (): void => {
       EventType: 'task.created',
       TaskAttributes: JSON.stringify(taskAttr),
       TimestampMs: Date.now(),
+      Sid: 'EV123',
     };
 
     expect(() => {

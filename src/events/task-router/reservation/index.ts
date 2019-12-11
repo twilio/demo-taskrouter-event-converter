@@ -5,7 +5,7 @@ import { getTime } from '../../../date';
 import { TaskRouterEvent } from '../../twilio';
 
 export const reservationCreatedHandler = ({
-  EventType, TaskAttributes, WorkerName, WorkerAttributes, TaskQueueSid, TimestampMs,
+  Sid, EventType, TaskAttributes, WorkerName, WorkerAttributes, TaskQueueSid, TimestampMs,
 }: TaskRouterEvent): [AgentEvent] => {
   if (EventType !== 'reservation.created') {
     throw new Error("Only tasks of type 'reservation.created' can be handled by reservationCreatedHandler.");
@@ -30,12 +30,13 @@ export const reservationCreatedHandler = ({
       number: contactUri,
       queue: TaskQueueSid,
       timestamp: getTime(TimestampMs),
+      sid: Sid,
     },
   ];
 };
 
 export const reservationAcceptedHandler = ({
-  EventType, TaskAttributes, WorkerName, WorkerAttributes, TaskQueueSid, TimestampMs,
+  Sid, EventType, TaskAttributes, WorkerName, WorkerAttributes, TaskQueueSid, TimestampMs,
 }: TaskRouterEvent): [AgentEvent, CallEvent] => {
   if (EventType !== 'reservation.accepted') {
     throw new Error("Only tasks of type 'reservation.accepted' can be handled by reservationAcceptedHandler.");
@@ -65,6 +66,7 @@ export const reservationAcceptedHandler = ({
       number: contactUri,
       queue: TaskQueueSid,
       timestamp: getTime(TimestampMs),
+      sid: Sid,
     },
     {
       type: CallEvents.ongoing,
@@ -73,12 +75,13 @@ export const reservationAcceptedHandler = ({
       our_number: called,
       their_number: from,
       timestamp: getTime(TimestampMs),
+      sid: Sid,
     },
   ];
 };
 
 export const reservationRejectedHandler = ({
-  EventType, TaskAttributes, WorkerAttributes, WorkerName, TaskAge, TaskQueueSid, TimestampMs,
+  Sid, EventType, TaskAttributes, WorkerAttributes, WorkerName, TaskAge, TaskQueueSid, TimestampMs,
 }: TaskRouterEvent): [AgentEvent] => {
   if (EventType !== 'reservation.rejected') {
     throw new Error("Only tasks of type 'reservation.rejected' can be handled by reservationRejectedHandler.");
@@ -109,6 +112,7 @@ export const reservationRejectedHandler = ({
       queue: TaskQueueSid,
       ringtime: (TaskAge && +TaskAge) || 0,
       timestamp: getTime(TimestampMs),
+      sid: Sid,
     },
   ];
 };

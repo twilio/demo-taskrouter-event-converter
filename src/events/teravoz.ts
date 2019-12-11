@@ -1,6 +1,7 @@
 export interface TeravozEvent extends Record<string, any> {
   type: string;
   timestamp: string;
+  sid: string;
 }
 
 export enum CallEvents {
