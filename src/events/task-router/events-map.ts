@@ -7,7 +7,7 @@ import { TaskRouterEventTypes, TaskRouterEvent } from '../twilio';
 
 type Handler = (event: TaskRouterEvent) => TeravozEvent[]
 type EventsMapping = {
-  [P in TaskRouterEventTypes]?: Handler;
+  [K in TaskRouterEventTypes]?: Handler;
 };
 
 /**

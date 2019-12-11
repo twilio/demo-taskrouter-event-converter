@@ -3,6 +3,7 @@ import fetch, { Headers } from 'node-fetch';
 import { IncomingHttpHeaders } from 'http';
 import { logger } from './logger';
 import { taskRouterEventConverter } from './events/task-router';
+import { gatherInputConverter } from './events/gather-input';
 
 interface CommonRequestDetails {
   body: any;
@@ -39,6 +40,7 @@ const requestLogger = (
   next: express.NextFunction,
 ): void => {
   logger.info(`Received request to ${req.method} ${req.url}`);
+  logger.debug('Request Details:', getCommonRequestDetails(req));
   next();
 };
 
@@ -53,7 +55,6 @@ const requestLogger = (
     const { body: event } = req;
 
     logger.info(`POST /webhook: Received ${event.EventType}.`);
-    logger.debug('Event details: ', event);
     const events = taskRouterEventConverter(event);
 
     if (events && events.length) {
@@ -75,6 +76,38 @@ const requestLogger = (
     }
 
     res.status(204).json();
+  });
+
+  app.post('/input', (req, res) => {
+    const { body: input } = req;
+
+    if (!input.CallSid) {
+      logger.warn('POST /input: Received input without a CallSid. Ignoring.');
+      return;
+    }
+
+    logger.info(`POST /input: Received input from ${input.CallSid}`);
+    const events = gatherInputConverter(input);
+
+    if (events && events.length) {
+      events.forEach(async (ev: any) => {
+        logger.info(`Emitting event converted from ${input.InputType}`, ev);
+
+        const response = await fetch('https://developers-staging.teravoz.com.br/myevents?login=enristaging', {
+          method: 'POST',
+          body: JSON.stringify(ev),
+          headers: new Headers({
+            'Content-Type': 'application/json',
+          }),
+        });
+
+        logger.info('Event emitted: ', response);
+      });
+    } else {
+      logger.info(`Input ${input.InputType} not found to convert to Teravoz's event. Ignoring.`);
+    }
+
+    res.status(200).json();
   });
 
   app.listen('3000', () => {

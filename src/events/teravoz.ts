@@ -24,6 +24,8 @@ export interface CallEvent extends TeravozEvent {
   our_number?: string;
   their_number?: string;
   code?: string;
+  nps?: string;
+  data?: string;
 }
 
 export enum AgentEvents {
