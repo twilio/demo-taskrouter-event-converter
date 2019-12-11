@@ -36,7 +36,7 @@ export const workerActivityUpdateHandler = ({
 
   const { contact_uri: contactUri } = JSON.parse(WorkerAttributes);
 
-  switch (WorkerActivityName) {
+  switch (WorkerActivityName.toLowerCase()) {
     case workerStatus.available: {
       if (WorkerPreviousActivityName === workerStatus.break) {
         return [{

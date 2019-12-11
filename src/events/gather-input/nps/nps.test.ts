@@ -23,6 +23,6 @@ describe('Convert custom.nps-provided', (): void => {
     expect(event.data).toBe(input.Digits);
     expect(event.nps).toBe(input.Digits);
     expect(event.timestamp).toStrictEqual(expect.any(String));
-    expect(event.sid).toBeFalsy(); // Custom events doesn't have a Sid, since it's not a event at all.
+    expect(event.sid).toBeFalsy(); // Custom events doesn't have a Sid.
   });
 });

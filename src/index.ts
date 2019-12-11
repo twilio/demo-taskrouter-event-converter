@@ -4,6 +4,8 @@ import { IncomingHttpHeaders } from 'http';
 import { logger } from './logger';
 import { taskRouterEventConverter } from './events/task-router';
 import { gatherInputConverter } from './events/gather-input';
+import { ApiClient } from './externals/api-client';
+import { TeravozEvent } from './events/teravoz';
 
 interface CommonRequestDetails {
   body: any;
@@ -46,31 +48,22 @@ const requestLogger = (
 
 ((): void => {
   const app = express();
+  const client = new ApiClient();
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(requestLogger);
 
-  app.post('/webhook', (req, res) => {
+  app.post('/webhook', async (req, res) => {
     const { body: event } = req;
 
     logger.info(`POST /webhook: Received ${event.EventType}.`);
     const events = taskRouterEventConverter(event);
 
     if (events && events.length) {
-      events.forEach(async (ev: any) => {
-        logger.info(`Emitting event converted from ${event.EventType}`, ev);
-
-        const response = await fetch('https://developers-staging.teravoz.com.br/myevents?login=enristaging', {
-          method: 'POST',
-          body: JSON.stringify(ev),
-          headers: new Headers({
-            'Content-Type': 'application/json',
-          }),
-        });
-
-        logger.info('Event emitted: ', response);
-      });
+      const responses = await client.sendMultipleEventsToWebhook(events);
+      logger.info(`${responses.length} event(s) sended.`);
+      logger.debug('Events responses: ', responses);
     } else {
       logger.info(`Event ${event.EventType} not found to convert to Teravoz's event. Ignoring.`);
     }
@@ -78,7 +71,7 @@ const requestLogger = (
     res.status(204).json();
   });
 
-  app.post('/input', (req, res) => {
+  app.post('/input', async (req, res) => {
     const { body: input } = req;
 
     if (!input.CallSid) {
@@ -90,19 +83,9 @@ const requestLogger = (
     const events = gatherInputConverter(input);
 
     if (events && events.length) {
-      events.forEach(async (ev: any) => {
-        logger.info(`Emitting event converted from ${input.InputType}`, ev);
-
-        const response = await fetch('https://developers-staging.teravoz.com.br/myevents?login=enristaging', {
-          method: 'POST',
-          body: JSON.stringify(ev),
-          headers: new Headers({
-            'Content-Type': 'application/json',
-          }),
-        });
-
-        logger.info('Event emitted: ', response);
-      });
+      const responses = await client.sendMultipleEventsToWebhook(events);
+      logger.info(`${responses.length} event(s) sended.`);
+      logger.debug('Events responses: ', responses);
     } else {
       logger.info(`Input ${input.InputType} not found to convert to Teravoz's event. Ignoring.`);
     }
