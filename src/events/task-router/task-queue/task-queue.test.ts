@@ -59,4 +59,19 @@ describe('Convert task-queue.entered', (): void => {
       taskQueueEnteredHandler(invalidInput);
     }).toThrow();
   });
+
+  test('Should throw an error if the TaskAttributes are not provided', (): void => {
+    const invalidInput = {
+      EventType: 'task-queue.entered',
+      TaskQueueSid: 'TQ123',
+      TaskQueueName: 'Queue 900',
+      TimestampMs: Date.now(),
+      Sid: 'EV123',
+    };
+
+    expect(() => {
+      // @ts-ignore
+      taskQueueEnteredHandler(invalidInput);
+    }).toThrow();
+  });
 });

@@ -78,6 +78,52 @@ describe('Convert reservation.accepted', (): void => {
       reservationAcceptedHandler(invalidInput);
     }).toThrow();
   });
+
+  test('Should throw an error if the TaskAttributes are not provided', (): void => {
+    const workerAttr = {
+      contact_uri: 'client:test',
+    };
+
+    const invalidInput = {
+      EventType: TaskRouterEventTypes.reservationAccepted,
+      WorkerAttributes: JSON.stringify(workerAttr),
+      WorkerName: 'test',
+      WorkerSid: 'WW123',
+      TaskQueueSid: 'TQ123',
+      TimestampMs: Date.now(),
+      Sid: 'EV123',
+    };
+
+    expect(() => {
+      // @ts-ignore
+      reservationAcceptedHandler(invalidInput);
+    }).toThrow();
+  });
+
+  test('Should throw an error if the WorkerAttributes are not provided', (): void => {
+    const taskAttr = {
+      call_sid: 'CA123',
+      direction: 'inbound',
+      called: '5511911111111',
+      from: '5511922222222',
+    };
+
+
+    const invalidInput = {
+      EventType: TaskRouterEventTypes.reservationAccepted,
+      TaskAttributes: JSON.stringify(taskAttr),
+      WorkerName: 'test',
+      WorkerSid: 'WW123',
+      TaskQueueSid: 'TQ123',
+      TimestampMs: Date.now(),
+      Sid: 'EV123',
+    };
+
+    expect(() => {
+      // @ts-ignore
+      reservationAcceptedHandler(invalidInput);
+    }).toThrow();
+  });
 });
 
 describe('Convert reservation.rejected', (): void => {
@@ -153,6 +199,54 @@ describe('Convert reservation.rejected', (): void => {
       reservationRejectedHandler(invalidInput);
     }).toThrow();
   });
+
+  test('Should throw an error if the TaskAttributes are not provided', (): void => {
+    const workerAttr = {
+      contact_uri: 'client:test',
+    };
+
+    const invalidInput = {
+      EventType: 'reservation.rejected',
+      WorkerAttributes: JSON.stringify(workerAttr),
+      WorkerName: 'test',
+      WorkerSid: 'WW123',
+      TaskQueueSid: 'TQ123',
+      TaskAge: 42,
+      TimestampMs: Date.now(),
+      Sid: 'EV123',
+    };
+
+    expect(() => {
+      // @ts-ignore
+      reservationRejectedHandler(invalidInput);
+    }).toThrow();
+  });
+
+  test('Should throw an error if the WorkerAttributes are not provided', (): void => {
+    const taskAttr = {
+      call_sid: 'CA123',
+      direction: 'inbound',
+      called: '5511911111111',
+      from: '5511922222222',
+    };
+
+
+    const invalidInput = {
+      EventType: 'reservation.rejected',
+      TaskAttributes: JSON.stringify(taskAttr),
+      WorkerName: 'test',
+      WorkerSid: 'WW123',
+      TaskQueueSid: 'TQ123',
+      TaskAge: 42,
+      TimestampMs: Date.now(),
+      Sid: 'EV123',
+    };
+
+    expect(() => {
+      // @ts-ignore
+      reservationRejectedHandler(invalidInput);
+    }).toThrow();
+  });
 });
 
 describe('Convert reservation.created', (): void => {
@@ -217,6 +311,51 @@ describe('Convert reservation.created', (): void => {
       WorkerSid: 'WW123',
       TaskQueueSid: 'TQ123',
       TimestampMs: Date.now(),
+    };
+
+    expect(() => {
+      // @ts-ignore
+      reservationCreatedHandler(invalidInput);
+    }).toThrow();
+  });
+
+  test('Should throw an error if the TaskAttributes are not provided', (): void => {
+    const workerAttr = {
+      contact_uri: 'client:test',
+    };
+
+    const invalidInput = {
+      EventType: 'reservation.created',
+      WorkerAttributes: JSON.stringify(workerAttr),
+      WorkerName: 'test',
+      WorkerSid: 'WW123',
+      TaskQueueSid: 'TQ123',
+      TimestampMs: Date.now(),
+      Sid: 'EV123',
+    };
+
+    expect(() => {
+      // @ts-ignore
+      reservationCreatedHandler(invalidInput);
+    }).toThrow();
+  });
+
+  test('Should throw an error if the WorkerAttributes are not provided', (): void => {
+    const taskAttr = {
+      call_sid: 'CA123',
+      direction: 'inbound',
+      called: '5511911111111',
+      from: '5511922222222',
+    };
+
+    const invalidInput = {
+      EventType: 'reservation.created',
+      TaskAttributes: JSON.stringify(taskAttr),
+      WorkerName: 'test',
+      WorkerSid: 'WW123',
+      TaskQueueSid: 'TQ123',
+      TimestampMs: Date.now(),
+      Sid: 'EV123',
     };
 
     expect(() => {

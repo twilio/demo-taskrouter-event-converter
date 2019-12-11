@@ -25,4 +25,17 @@ describe('Convert custom.nps-provided', (): void => {
     expect(event.timestamp).toStrictEqual(expect.any(String));
     expect(event.sid).toBeFalsy(); // Custom events doesn't have a Sid.
   });
+
+  test('Should thrown an error if the event passed is different from \'custom.nps-provided\'', (): void => {
+    const invalidInput = {
+      InputType: 'custom.anyevent',
+      CallSid: 'CA123',
+      Digits: '5',
+      TimestampMs: Date.now().toString(),
+    };
+
+    expect(() => {
+      userInputNpsHandler(invalidInput as any);
+    }).toThrow();
+  });
 });

@@ -56,6 +56,19 @@ describe('Convert task.created', (): void => {
       taskCreatedHandler(wrongInput);
     }).toThrow();
   });
+
+  test('Should throw an error if the event\'s TaskAttributes are not provided', (): void => {
+    const wrongInput = {
+      EventType: 'task.created',
+      TimestampMs: Date.now(),
+      Sid: 'EV123',
+    };
+
+    expect(() => {
+      // @ts-ignore
+      taskCreatedHandler(wrongInput);
+    }).toThrow();
+  });
 });
 
 describe('Convert task.canceled', (): void => {
@@ -96,6 +109,19 @@ describe('Convert task.canceled', (): void => {
     const invalidInput = {
       EventType: 'task.created',
       TaskAttributes: JSON.stringify(taskAttr),
+      TimestampMs: Date.now(),
+      Sid: 'EV123',
+    };
+
+    expect(() => {
+      // @ts-ignore
+      taskCanceledHandler(invalidInput);
+    }).toThrow();
+  });
+
+  test('Should throw an error if the event\'s TaskAttributes are not provided', (): void => {
+    const invalidInput = {
+      EventType: 'task.canceled',
       TimestampMs: Date.now(),
       Sid: 'EV123',
     };
@@ -166,6 +192,51 @@ describe('Convert task.wrapup', (): void => {
       EventType: 'task.created',
       TaskAttributes: JSON.stringify(taskAttr),
       TimestampMs: Date.now(),
+      Sid: 'EV123',
+    };
+
+    expect(() => {
+      // @ts-ignore
+      taskWrapupHandler(invalidInput);
+    }).toThrow();
+  });
+
+  test('Should throw an error if the TaskAttributes are not provided', (): void => {
+    const workerAttr = {
+      contact_uri: 'client:test',
+    };
+
+    const invalidInput = {
+      EventType: 'task.wrapup',
+      WorkerAttributes: JSON.stringify(workerAttr),
+      TimestampMs: Date.now(),
+      WorkerName: 'TWorker',
+      WorkerSid: 'WW123',
+      TaskQueueSid: 'TQ123',
+      Sid: 'EV123',
+    };
+
+    expect(() => {
+      // @ts-ignore
+      taskWrapupHandler(invalidInput);
+    }).toThrow();
+  });
+
+  test('Should throw an error if the WorkerAttributes are not provided', (): void => {
+    const taskAttr = {
+      call_sid: 'CA123',
+      direction: 'inbound',
+      called: '5511911111111',
+      from: '5511922222222',
+    };
+
+    const invalidInput = {
+      EventType: 'task.wrapup',
+      TimestampMs: Date.now(),
+      TaskAttributes: JSON.stringify(taskAttr),
+      WorkerName: 'TWorker',
+      WorkerSid: 'WW123',
+      TaskQueueSid: 'TQ123',
       Sid: 'EV123',
     };
 

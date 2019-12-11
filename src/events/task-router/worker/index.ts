@@ -13,7 +13,7 @@ export const workerActivityUpdateHandler = ({
   EventType,
   WorkerActivityName,
   WorkerPreviousActivityName,
-  WorkerName,
+  WorkerName = '',
   WorkerAttributes,
   TimestampMs,
   Sid,
@@ -41,7 +41,7 @@ export const workerActivityUpdateHandler = ({
       if (WorkerPreviousActivityName === workerStatus.break) {
         return [{
           type: AgentEvents.unpaused,
-          actor: WorkerName || '',
+          actor: WorkerName,
           number: contactUri,
           timestamp: getTime(TimestampMs),
           sid: Sid,
@@ -50,7 +50,7 @@ export const workerActivityUpdateHandler = ({
 
       return [{
         type: AgentEvents.loggedIn,
-        actor: WorkerName || '',
+        actor: WorkerName,
         number: contactUri,
         timestamp: getTime(TimestampMs),
         sid: Sid,
@@ -62,7 +62,7 @@ export const workerActivityUpdateHandler = ({
           && WorkerPreviousActivityName.toLowerCase() !== workerStatus.unavailable) {
         return [{
           type: AgentEvents.loggedOut,
-          actor: WorkerName || '',
+          actor: WorkerName,
           number: contactUri,
           timestamp: getTime(TimestampMs),
           sid: Sid,
@@ -73,7 +73,7 @@ export const workerActivityUpdateHandler = ({
     case workerStatus.break:
       return [{
         type: AgentEvents.paused,
-        actor: WorkerName || '',
+        actor: WorkerName,
         number: contactUri,
         timestamp: getTime(TimestampMs),
         sid: Sid,

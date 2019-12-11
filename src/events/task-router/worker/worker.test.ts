@@ -382,4 +382,36 @@ describe('Convert worker.activity.update', () => {
       workerActivityUpdateHandler(invalidInput);
     }).toThrow();
   });
+
+  test('Should throw an error if the event passed to the handler has no WorkerAttributes', (): void => {
+    const invalidInput = {
+      EventType: 'worker.activity.update',
+      WorkerName: 'test',
+      WorkerSid: 'WW123',
+      WorkerActivityName: 'offline',
+      WorkerPreviousActivityName: 'break',
+      TimestampMs: Date.now(),
+      Sid: 'EV123',
+    };
+
+    expect(() => {
+      workerActivityUpdateHandler(invalidInput as any);
+    }).toThrow();
+  });
+
+  test('Should throw an error if the event passed to the handler has no WorkerActivityName', (): void => {
+    const invalidInput = {
+      EventType: 'worker.activity.update',
+      WorkerName: 'test',
+      WorkerSid: 'WW123',
+      WorkerPreviousActivityName: 'break',
+      WorkerAttributes: JSON.stringify(workerAttr),
+      TimestampMs: Date.now(),
+      Sid: 'EV123',
+    };
+
+    expect(() => {
+      workerActivityUpdateHandler(invalidInput as any);
+    }).toThrow();
+  });
 });
