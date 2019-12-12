@@ -6,6 +6,7 @@
   "scripts": {
     "test": "jest",
     "coverage": "jest --coverage",
+    "docs": "typedoc --out docs --exclude **/*.test.ts src",
     "dev": "env-cmd nodemon --watch \"src\" --exec \"ts-node src/index.ts\" -e ts | pino-pretty -t SYS:standard -i hostname,pid ",
     "start": "env-cmd ts-node src/index.ts"
   },
@@ -31,6 +32,7 @@
     "pino-pretty": "^3.4.0",
     "ts-jest": "^24.2.0",
     "ts-node": "^8.5.4",
+    "typedoc": "^0.15.4",
     "typescript": "^3.7.3"
   }
 }

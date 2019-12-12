@@ -1,5 +1,6 @@
 import { TeravozEvent } from '../teravoz';
 import { inputMapping } from './input-map';
+import { converter } from '../converter';
 
 export enum UserInputTypes {
   npsProvided = 'custom.nps-provided'
@@ -12,12 +13,4 @@ export interface UserInput {
   TimestampMs: string;
 }
 
-export const gatherInputConverter = (event: UserInput): TeravozEvent[] => {
-  const mapEvent = inputMapping[event.InputType];
-
-  if (mapEvent) {
-    return mapEvent(event);
-  }
-
-  return [];
-};
+export const gatherInputConverter = (event: UserInput): TeravozEvent[] => converter(inputMapping, event.InputType, event);
