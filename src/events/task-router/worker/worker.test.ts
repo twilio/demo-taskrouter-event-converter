@@ -2,6 +2,7 @@ import { workerActivityUpdateHandler } from '.';
 
 const workerAttr = {
   contact_uri: 'client:test',
+  queues: ['900'],
 };
 
 const assertEvent = (input: any, event: any, expectedEv: string): void => {
@@ -10,9 +11,54 @@ const assertEvent = (input: any, event: any, expectedEv: string): void => {
   expect(event.number).toBe(workerAttr.contact_uri);
   expect(event.timestamp).toStrictEqual(expect.any(String));
   expect(event.sid).toBe(input.Sid);
+  expect(event.queue).toBe('900');
 };
 
 describe('Convert worker.activity.update', () => {
+  describe('Any Activity -> *', (): void => {
+    test("Shouldn't convert to a Teravoz's event if the Worker doesn't belongs to any queue", (): void => {
+      const input = {
+        EventType: 'worker.activity.update',
+        WorkerName: 'test',
+        WorkerSid: 'WW123',
+        WorkerActivityName: 'Available',
+        WorkerPreviousActivityName: 'Offline',
+        WorkerAttributes: JSON.stringify({ contact_uri: 'client:test' }),
+        TimestampMs: Date.now(),
+        Sid: 'EV123',
+      };
+
+      // @ts-ignore
+      const events = workerActivityUpdateHandler(input);
+      expect(events).not.toBeFalsy();
+      expect(events).toBeInstanceOf(Array);
+      expect(events.length).toBe(0);
+    });
+
+    test('Should emit an event for each queue that the Worker belongs to', (): void => {
+      const input = {
+        EventType: 'worker.activity.update',
+        WorkerName: 'test',
+        WorkerSid: 'WW123',
+        WorkerActivityName: 'Available',
+        WorkerPreviousActivityName: 'Offline',
+        WorkerAttributes: JSON.stringify({ ...workerAttr, queues: ['900', '901', '902'] }),
+        TimestampMs: Date.now(),
+        Sid: 'EV123',
+      };
+
+      // @ts-ignore
+      const events = workerActivityUpdateHandler(input);
+      expect(events).not.toBeFalsy();
+      expect(events).toBeInstanceOf(Array);
+      expect(events.length).toBe(3);
+
+      const [event] = events;
+
+      assertEvent(input, event, 'actor.logged-in');
+    });
+  });
+
   describe('Activity offline -> *', (): void => {
     test("Shouldn't convert worker.activity.update (offline -> offline) to any event", (): void => {
       const input = {
@@ -38,8 +84,8 @@ describe('Convert worker.activity.update', () => {
         EventType: 'worker.activity.update',
         WorkerName: 'test',
         WorkerSid: 'WW123',
-        WorkerActivityName: 'unavaliable',
-        WorkerPreviousActivityName: 'offline',
+        WorkerActivityName: 'Unavaliable',
+        WorkerPreviousActivityName: 'Offline',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
         Sid: 'EV123',
@@ -57,8 +103,8 @@ describe('Convert worker.activity.update', () => {
         EventType: 'worker.activity.update',
         WorkerName: 'test',
         WorkerSid: 'WW123',
-        WorkerActivityName: 'available',
-        WorkerPreviousActivityName: 'offline',
+        WorkerActivityName: 'Available',
+        WorkerPreviousActivityName: 'Offline',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
         Sid: 'EV123',
@@ -81,8 +127,8 @@ describe('Convert worker.activity.update', () => {
         EventType: 'worker.activity.update',
         WorkerName: 'test',
         WorkerSid: 'WW123',
-        WorkerActivityName: 'break',
-        WorkerPreviousActivityName: 'offline',
+        WorkerActivityName: 'Break',
+        WorkerPreviousActivityName: 'Offline',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
         Sid: 'EV123',
@@ -106,8 +152,8 @@ describe('Convert worker.activity.update', () => {
         EventType: 'worker.activity.update',
         WorkerName: 'test',
         WorkerSid: 'WW123',
-        WorkerActivityName: 'unavailable',
-        WorkerPreviousActivityName: 'unavailable',
+        WorkerActivityName: 'Unavailable',
+        WorkerPreviousActivityName: 'Unavailable',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
         Sid: 'EV123',
@@ -125,8 +171,8 @@ describe('Convert worker.activity.update', () => {
         EventType: 'worker.activity.update',
         WorkerName: 'test',
         WorkerSid: 'WW123',
-        WorkerActivityName: 'offline',
-        WorkerPreviousActivityName: 'unavailable',
+        WorkerActivityName: 'Offline',
+        WorkerPreviousActivityName: 'Unavailable',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
       };
@@ -143,8 +189,8 @@ describe('Convert worker.activity.update', () => {
         EventType: 'worker.activity.update',
         WorkerName: 'test',
         WorkerSid: 'WW123',
-        WorkerActivityName: 'available',
-        WorkerPreviousActivityName: 'unavailable',
+        WorkerActivityName: 'Available',
+        WorkerPreviousActivityName: 'Unavailable',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
         Sid: 'EV123',
@@ -166,8 +212,8 @@ describe('Convert worker.activity.update', () => {
         EventType: 'worker.activity.update',
         WorkerName: 'test',
         WorkerSid: 'WW123',
-        WorkerActivityName: 'break',
-        WorkerPreviousActivityName: 'unavailable',
+        WorkerActivityName: 'Break',
+        WorkerPreviousActivityName: 'Unavailable',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
         Sid: 'EV123',
@@ -191,8 +237,8 @@ describe('Convert worker.activity.update', () => {
         EventType: 'worker.activity.update',
         WorkerName: 'test',
         WorkerSid: 'WW123',
-        WorkerActivityName: 'available',
-        WorkerPreviousActivityName: 'available',
+        WorkerActivityName: 'Available',
+        WorkerPreviousActivityName: 'Available',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
         Sid: 'EV123',
@@ -210,8 +256,8 @@ describe('Convert worker.activity.update', () => {
         EventType: 'worker.activity.update',
         WorkerName: 'test',
         WorkerSid: 'WW123',
-        WorkerActivityName: 'offline',
-        WorkerPreviousActivityName: 'available',
+        WorkerActivityName: 'Offline',
+        WorkerPreviousActivityName: 'Available',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
         Sid: 'EV123',
@@ -233,8 +279,8 @@ describe('Convert worker.activity.update', () => {
         EventType: 'worker.activity.update',
         WorkerName: 'test',
         WorkerSid: 'WW123',
-        WorkerActivityName: 'unavailable',
-        WorkerPreviousActivityName: 'available',
+        WorkerActivityName: 'Unavailable',
+        WorkerPreviousActivityName: 'Available',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
         Sid: 'EV123',
@@ -256,8 +302,8 @@ describe('Convert worker.activity.update', () => {
         EventType: 'worker.activity.update',
         WorkerName: 'test',
         WorkerSid: 'WW123',
-        WorkerActivityName: 'break',
-        WorkerPreviousActivityName: 'available',
+        WorkerActivityName: 'Break',
+        WorkerPreviousActivityName: 'Available',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
         Sid: 'EV123',
@@ -281,8 +327,8 @@ describe('Convert worker.activity.update', () => {
         EventType: 'worker.activity.update',
         WorkerName: 'test',
         WorkerSid: 'WW123',
-        WorkerActivityName: 'break',
-        WorkerPreviousActivityName: 'break',
+        WorkerActivityName: 'Break',
+        WorkerPreviousActivityName: 'Break',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
         Sid: 'EV123',
@@ -300,8 +346,8 @@ describe('Convert worker.activity.update', () => {
         EventType: 'worker.activity.update',
         WorkerName: 'test',
         WorkerSid: 'WW123',
-        WorkerActivityName: 'available',
-        WorkerPreviousActivityName: 'break',
+        WorkerActivityName: 'Available',
+        WorkerPreviousActivityName: 'Break',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
         Sid: 'EV123',
@@ -323,8 +369,8 @@ describe('Convert worker.activity.update', () => {
         EventType: 'worker.activity.update',
         WorkerName: 'test',
         WorkerSid: 'WW123',
-        WorkerActivityName: 'unavailable',
-        WorkerPreviousActivityName: 'break',
+        WorkerActivityName: 'Unavailable',
+        WorkerPreviousActivityName: 'Break',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
         Sid: 'EV123',
@@ -346,8 +392,8 @@ describe('Convert worker.activity.update', () => {
         EventType: 'worker.activity.update',
         WorkerName: 'test',
         WorkerSid: 'WW123',
-        WorkerActivityName: 'offline',
-        WorkerPreviousActivityName: 'break',
+        WorkerActivityName: 'Offline',
+        WorkerPreviousActivityName: 'Break',
         WorkerAttributes: JSON.stringify(workerAttr),
         TimestampMs: Date.now(),
         Sid: 'EV123',
@@ -370,8 +416,8 @@ describe('Convert worker.activity.update', () => {
       EventType: 'worker.create',
       WorkerName: 'test',
       WorkerSid: 'WW123',
-      WorkerActivityName: 'offline',
-      WorkerPreviousActivityName: 'break',
+      WorkerActivityName: 'Offline',
+      WorkerPreviousActivityName: 'Break',
       WorkerAttributes: JSON.stringify(workerAttr),
       TimestampMs: Date.now(),
       Sid: 'EV123',
@@ -388,8 +434,8 @@ describe('Convert worker.activity.update', () => {
       EventType: 'worker.activity.update',
       WorkerName: 'test',
       WorkerSid: 'WW123',
-      WorkerActivityName: 'offline',
-      WorkerPreviousActivityName: 'break',
+      WorkerActivityName: 'Offline',
+      WorkerPreviousActivityName: 'Break',
       TimestampMs: Date.now(),
       Sid: 'EV123',
     };
@@ -404,7 +450,7 @@ describe('Convert worker.activity.update', () => {
       EventType: 'worker.activity.update',
       WorkerName: 'test',
       WorkerSid: 'WW123',
-      WorkerPreviousActivityName: 'break',
+      WorkerPreviousActivityName: 'Break',
       WorkerAttributes: JSON.stringify(workerAttr),
       TimestampMs: Date.now(),
       Sid: 'EV123',

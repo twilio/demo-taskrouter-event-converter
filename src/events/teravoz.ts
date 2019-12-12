@@ -44,7 +44,7 @@ export interface AgentEvent extends TeravozEvent {
   type: AgentEvents;
   actor: string;
   number: string;
-  queue?: string;
+  queue: string;
   call_id?: string;
   code?: string;
   ringtime?: number;
