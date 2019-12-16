@@ -2,7 +2,7 @@ import { userInputNpsHandler } from '.';
 import { UserInput, UserInputTypes } from '..';
 
 describe('Convert custom.nps-provided', (): void => {
-  test('Should convert custom.nps-provided to custom.nps-provided', (): void => {
+  test('Should convert custom.nps-provided to call.data-provided', (): void => {
     const input: UserInput = {
       InputType: UserInputTypes.npsProvided,
       CallSid: 'CA123',

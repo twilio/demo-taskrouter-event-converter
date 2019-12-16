@@ -5,7 +5,7 @@
 export interface TeravozEvent extends Record<string, any> {
   type: string;
   timestamp: string;
-  sid: string;
+  sid?: string;
 }
 
 /**
@@ -40,6 +40,7 @@ export interface CallEvent extends TeravozEvent {
   nps?: string;
   data?: string;
 }
+
 /**
  * AgentEvents represents all the event types related to `actor`.
  */
@@ -53,6 +54,7 @@ export enum AgentEvents {
   ringing = 'actor.ringing',
   unpaused = 'actor.unpaused'
 }
+
 /**
  * AgentEvent is the representation of a Teravoz's actor event. It represents all the event
  * that has the type of a `actor` event (see [[AgentEvents]]).
@@ -67,4 +69,29 @@ export interface AgentEvent extends TeravozEvent {
   call_id?: string;
   code?: string;
   ringtime?: number;
+}
+
+/**
+ * DialerEvents represents all the event types related to `dialer`
+ */
+export enum DialerEvents {
+  dialerAttempt = 'dialer.attempt',
+  dialerSuccess = 'dialer.success',
+  dialerFailure = 'dialer.failure',
+  dialerExpired = 'dialer.expired',
+  dialerExceeded = 'dialer.exceeded',
+}
+
+/**
+ * DialerEvent is the representation of a Teravoz's dialer event. It represents all the event
+ * that has the type of a `actor` event (see [[DialerEvents]]).
+ *
+ * @extends TeravozEvent
+ */
+export interface DialerEvent extends TeravozEvent {
+  type: DialerEvents;
+  number: string;
+  call_id?: string;
+  amd_status?: string;
+  reason?: 'machine' | 'notsure' | 'noanswer' | 'busy' | 'unavailable' | 'invalid';
 }

@@ -46,7 +46,15 @@ const inputHandler = async (req: Request, res: Response): Promise<void> => {
   res.status(200).json();
 };
 
+const dialerEventHandler = async (req: Request, res: Response): Promise<void> => {
+  const { body: event } = req;
+  logger.info('Received dialer event: ', event);
+
+  res.send(200).json();
+};
+
 export const loadRoutesInto = (app: express.Application): void => {
   app.post('/webhook', webhookHandler);
   app.post('/input', inputHandler);
+  app.post('/dialer', dialerEventHandler);
 };
