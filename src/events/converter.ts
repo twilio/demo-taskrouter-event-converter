@@ -8,12 +8,12 @@ import { TeravozEvent } from './teravoz';
  *
  * @param eventType the identifier of the actual incoming event; the handler for this event will
  * be searched inside the `mapping` parameter. If there's not a handler for this event, then an
- * empty array will ber eturned
+ * empty array will be returned
  *
- * The original Twilio event that triggered the conversor call, to be used by the event handler
- * to do the conversion
- * @param event
+ * @param event The original Twilio event that triggered the conversor call,
+ * to be used by the event handler to make the convertion
  */
+
 export const converter = (
   mapping: Record<string, any>,
   eventType: string,

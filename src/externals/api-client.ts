@@ -3,18 +3,37 @@ import { environment } from '../environment';
 import { logger } from '../logger';
 import { TeravozEvent } from '../events/teravoz';
 
+/**
+ * WebhookResponse represents the object structure that will be returned
+ * after sending an event to an given webhook.
+ *
+ */
 export interface WebhookResponse {
+  /** body represents the response returned by the API */
   body: any;
+  /** status is the statusCode returned by the API   */
   status: number;
 }
 
+/**
+ * ApiClient is a class that contains all the operations related to
+ * the external webhook API where the events will be sended.
+ */
 export class ApiClient {
+  /**
+   * baseURL is the base of the URL where the events will be sended
+   */
   private baseURL: string;
 
   constructor() {
     this.baseURL = environment.externalWebhookEndpoint || '';
   }
 
+  /**
+   * sendEventToWebhook sends a single event to the target webhook
+   *
+   * @param event A generic Teravoz's Event. See more in [[TeravozEvent]]
+   */
   public async sendEventToWebhook(event: TeravozEvent): Promise<WebhookResponse> {
     try {
       logger.info(`Sending ${event.type} to webhook.`);
@@ -51,6 +70,13 @@ export class ApiClient {
     }
   }
 
+  /**
+   * SendMultipleEventsToWebhook sends all the events provided, one by one, to the
+   * target endpoint. The requests are made in parallel and, if an error is thrown in
+   * any request, the catch flow will be trigered.
+   *
+   * @param events An array of generic Teravoz's Events. See more in [[TeravozEvent]]
+   */
   public async sendMultipleEventsToWebhook(events: TeravozEvent[]): Promise<WebhookResponse[]> {
     try {
       const promises = events.map((event) => this.sendEventToWebhook(event));
