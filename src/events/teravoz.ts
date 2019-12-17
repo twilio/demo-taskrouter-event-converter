@@ -82,6 +82,9 @@ export enum DialerEvents {
   dialerExceeded = 'dialer.exceeded',
 }
 
+export type TeravozAmdStatus = 'human' | 'machine' | 'notsure';
+export type FailureReasons = 'machine' | 'notsure' | 'noanswer' | 'busy' | 'unavailable' | 'invalid'
+
 /**
  * DialerEvent is the representation of a Teravoz's dialer event. It represents all the event
  * that has the type of a `actor` event (see [[DialerEvents]]).
@@ -92,6 +95,6 @@ export interface DialerEvent extends TeravozEvent {
   type: DialerEvents;
   number: string;
   call_id?: string;
-  amd_status?: string;
-  reason?: 'machine' | 'notsure' | 'noanswer' | 'busy' | 'unavailable' | 'invalid';
+  amd_status?: string | null;
+  reason?: TeravozAmdStatus;
 }
