@@ -21,6 +21,7 @@ export interface TwilioCustomDialerEvent {
   EventType: TwilioCustomDialerEventsTypes;
   To: string;
   TimestampMs: string;
+  TaskAttributes: string;
   CallSid?: string;
   AmdStatus?: TwilioAmdStatus;
 }

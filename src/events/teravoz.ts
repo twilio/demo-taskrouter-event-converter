@@ -94,6 +94,7 @@ export type FailureReasons = 'machine' | 'notsure' | 'noanswer' | 'busy' | 'unav
 export interface DialerEvent extends TeravozEvent {
   type: DialerEvents;
   number: string;
+  code?: string;
   call_id?: string;
   amd_status?: string | null;
   reason?: TeravozAmdStatus;
