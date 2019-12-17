@@ -13,4 +13,4 @@ export interface TwilioCustomDialerEvent {
   CallSid?: string;
 }
 
-export const dialerEventsConvert = (event: TwilioCustomDialerEvent): TeravozEvent[] => converter(eventsMapping, event.EventType, event);
+export const dialerEventsConverter = (event: TwilioCustomDialerEvent): TeravozEvent[] => converter(eventsMapping, event.EventType, event);

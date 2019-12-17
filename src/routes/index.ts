@@ -4,6 +4,7 @@ import { logger } from '../logger';
 import { taskRouterEventConverter } from '../events/task-router';
 import { ApiClient } from '../externals/api-client';
 import { gatherInputConverter } from '../events/gather-input';
+import { TwilioCustomDialerEvent, dialerEventsConverter } from '../events/dialer';
 
 const webhookHandler = async (req: Request, res: Response): Promise<void> => {
   const { body: event } = req;
@@ -47,8 +48,19 @@ const inputHandler = async (req: Request, res: Response): Promise<void> => {
 };
 
 const dialerEventHandler = async (req: Request, res: Response): Promise<void> => {
-  const { body: event } = req;
-  logger.info('Received dialer event: ', event);
+  const { body: event } = req as { body: TwilioCustomDialerEvent };
+
+  logger.info(`POST /dialer: Received ${event.EventType}`);
+  const events = dialerEventsConverter(event);
+
+  if (events && events.length) {
+    const client = new ApiClient();
+    const responses = await client.sendMultipleEventsToWebhook(events);
+    logger.info(`${responses.length} event(s) sended.`);
+    logger.debug('Events responses: ', responses);
+  } else {
+    logger.info(`Twilio's dialer event ${event.EventType} not found to convert to Teravoz's event. Ignoring.`);
+  }
 
   res.send(200).json();
 };

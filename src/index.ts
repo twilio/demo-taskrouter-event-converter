@@ -2,6 +2,7 @@ import express from 'express';
 import { IncomingHttpHeaders } from 'http';
 import { logger } from './logger';
 import { loadRoutesInto } from './routes';
+import { botFilterMiddleware } from './middlewares/bot-filter';
 
 interface CommonRequestDetails {
   body: any;
@@ -48,6 +49,7 @@ const requestLogger = (
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(requestLogger);
+  app.use(botFilterMiddleware);
   loadRoutesInto(app);
 
   app.listen('3000', () => {
