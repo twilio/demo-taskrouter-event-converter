@@ -2,17 +2,40 @@ import {
   CallEvent, CallEvents, AgentEvent, AgentEvents,
 } from '../../teravoz';
 import { getTime } from '../../../date';
-import { TaskRouterEvent } from '../../twilio';
+import { TaskRouterEvent, TaskRouterEventTypes } from '../../twilio';
 
+/**
+ * taskCreatedHandler converts the `task.created` TaskRouter's
+ * event to the equivalent Teravoz's event `call.new`.
+ *
+ * The `task.created` TaskRouter's event is triggered each time a
+ * new task is created. When using Twilio Flex, calls are created
+ * using tasks, and that's the reason that is used these tasks events
+ * to emit Teravoz's call events.
+ *
+ * The mapped structure will be:
+ *
+ * |   Teravoz    |          Twilio          |           Value           |
+ * |:------------:|:------------------------:|:-------------------------:|
+ * |     type     |        EventType         | Converted into "call.new" |
+ * |   call_id    |  TaskAttributes.call_id  |  TaskAttributes.call_id   |
+ * |  direction   | TaskAttributes.direction | TaskAttributes.direction  |
+ * |  our_number  |  TaskAttributes.called   |   TaskAttributes.called   |
+ * | their_number |   TaskAttributes.from    |    TaskAttributes.from    |
+ * |  timestamp   |       TimestampMs        |  Timestamp UTC's string   |
+ * |     sid      |           Sid            |    Twilio's Event Sid     |
+ *
+ * @param taskRouterEvent The incomming TaskRouter's event
+ */
 export const taskCreatedHandler = ({
   Sid, EventType, TaskAttributes, TimestampMs,
 }: TaskRouterEvent): [CallEvent] => {
-  if (EventType !== 'task.created') {
-    throw new Error("Only tasks of type 'task.created' can be handled by taskCreatedHandler.");
+  if (EventType !== TaskRouterEventTypes.taskCreated) {
+    throw new Error(`Only tasks of type '${TaskRouterEventTypes.taskCreated}' can be handled by taskCreatedHandler.`);
   }
 
   if (!TaskAttributes) {
-    throw new Error("Missing TaskAttributes in 'task.created' event.");
+    throw new Error(`Missing TaskAttributes in '${TaskRouterEventTypes.taskCreated}' event.`);
   }
 
   const {
@@ -32,15 +55,35 @@ export const taskCreatedHandler = ({
   ];
 };
 
+/**
+ * taskCanceledHandler converts the `task.canceled` TaskRouter's
+ * event to the equivalent Teravoz's event `call.queue-abandon`.
+ *
+ * The `task.canceled` TaskRouter's event is triggered each time a
+ * task is canceled. When using Twilio Flex, when a caller that was waiting
+ * on a TaskQueue give up of the call, the task is marked as canceled. That's
+ * why we convert this event to the Teravoz's one `call.queue-abandon`
+ *
+ * The mapped structure will be:
+ *
+ * |  Teravoz  |         Twilio         |                Value                |
+ * |:---------:|:----------------------:|:-----------------------------------:|
+ * |   type    |       EventType        | Converted into "call.queue-abandon" |
+ * |  call_id  | TaskAttributes.call_id |       TaskAttributes.call_id        |
+ * | timestamp |      TimestampMs       |       Timestamp UTC's string        |
+ * |    sid    |          Sid           |         Twilio's Event Sid          |
+ *
+ * @param taskRouterEvent The incomming TaskRouter's event
+ */
 export const taskCanceledHandler = ({
   Sid, EventType, TaskAttributes, TimestampMs,
 }: TaskRouterEvent): CallEvent[] => {
-  if (EventType !== 'task.canceled') {
-    throw new Error("Only tasks of type 'task.canceled' can be handled by taskCanceledhandler.");
+  if (EventType !== TaskRouterEventTypes.taskCanceled) {
+    throw new Error(`Only tasks of type '${TaskRouterEventTypes.taskCanceled}' can be handled by taskCanceledhandler.`);
   }
 
   if (!TaskAttributes) {
-    throw new Error("Missing TaskAttributes in 'task.canceled' event.");
+    throw new Error(`Missing TaskAttributes in '${TaskRouterEventTypes.taskCanceled}' event.`);
   }
 
   const { call_sid: callId } = JSON.parse(TaskAttributes);
@@ -55,19 +98,51 @@ export const taskCanceledHandler = ({
   ];
 };
 
+/**
+ * taskWrapupHandler converts the `task.wrapup` TaskRouter's
+ * event to two Teravoz's events: `actor.left` AND `call.finished`
+ *
+ * The mapped events structure will be:
+ *
+ * ### agent.left
+ *
+ * |  Teravoz  |           Twilio            |            Value            |
+ * |:---------:|:---------------------------:|:---------------------------:|
+ * |   type    |          EventType          | Converted into "agent.left" |
+ * |  call_id  |   TaskAttributes.call_id    |   TaskAttributes.call_id    |
+ * |   actor   |         WorkerName          |         WorkerName          |
+ * |  number   | WorkerAttributes.client_uri | WorkerAttributes.client_uri |
+ * |   queue   |        TaskQueueSid         |        TaskQueueSid         |
+ * | timestamp |         TimestampMs         |   Timestamp UTC's string    |
+ * |    sid    |             Sid             |     Twilio's Event Sid      |
+ *
+ *  ### call.finished
+ *
+ * |   Teravoz    |          Twilio          |             Value              |
+ * |:------------:|:------------------------:|:------------------------------:|
+ * |     type     |        EventType         | Converted into "call.finished" |
+ * |   call_id    |  TaskAttributes.call_id  |     TaskAttributes.call_id     |
+ * |  direction   | TaskAttributes.direction |    TaskAttributes.direction    |
+ * |  our_number  |  TaskAttributes.called   |     TaskAttributes.called      |
+ * | their_number |   TaskAttributes.from    |      TaskAttributes.from       |
+ * |  timestamp   |       TimestampMs        |     Timestamp UTC's string     |
+ * |     sid      |           Sid            |       Twilio's Event Sid       |
+ *
+ * @param taskRouterEvent The incomming TaskRouter's event
+ */
 export const taskWrapupHandler = ({
   Sid, EventType, TaskAttributes, TimestampMs, WorkerName = '', WorkerAttributes, TaskQueueSid,
 }: TaskRouterEvent): [CallEvent, AgentEvent] => {
-  if (EventType !== 'task.wrapup') {
-    throw new Error("Only tasks of type 'task.wrapup' can be handled by taskWrapupHandler.");
+  if (EventType !== TaskRouterEventTypes.taskWrapup) {
+    throw new Error(`Only tasks of type '${TaskRouterEventTypes.taskWrapup}' can be handled by taskWrapupHandler.`);
   }
 
   if (!TaskAttributes) {
-    throw new Error("Missing TaskAttributes in 'task.wrapup' event.");
+    throw new Error(`Missing TaskAttributes in '${TaskRouterEventTypes.taskWrapup}' event.`);
   }
 
   if (!WorkerAttributes) {
-    throw new Error("Missing WorkerAttributes in 'task.wrapup' event.");
+    throw new Error(`Missing WorkerAttributes in '${TaskRouterEventTypes.taskWrapup}' event.`);
   }
 
   const {

@@ -1,7 +1,27 @@
 import { CallEvent, CallEvents } from '../../teravoz';
 import { getTime } from '../../../date';
-import { TaskRouterEvent } from '../../twilio';
+import { TaskRouterEvent, TaskRouterEventTypes } from '../../twilio';
 
+/**
+ *
+ * TaskQueueEnteredHandler converts the `task-queue.entered` TaskRouter's
+ * events to the equivalent Teravoz's event `call.waiting`.
+ *
+ * * The mapped structure will be:
+ *
+ * |   Teravoz    |          Twilio          |             Value             |
+ * |:------------:|:------------------------:|:-----------------------------:|
+ * |     type     |        EventType         | Converted into "call.waiting" |
+ * |   call_id    |  TaskAttributes.call_id  |    TaskAttributes.call_id     |
+ * |  direction   | TaskAttributes.direction |   TaskAttributes.direction    |
+ * |  our_number  |  TaskAttributes.called   |     TaskAttributes.called     |
+ * | their_number |   TaskAttributes.from    |      TaskAttributes.from      |
+ * |    queue     |       TaskQueueSid       |         TaskQueueSid          |
+ * |  timestamp   |       TimestampMs        |    Timestamp UTC's string     |
+ * |     sid      |           Sid            |      Twilio's Event Sid       |
+ *
+ * @param taskRouterEvent the incomming taskRouterEvent to be converted.
+ */
 export const taskQueueEnteredHandler = ({
   Sid,
   EventType,
@@ -9,8 +29,8 @@ export const taskQueueEnteredHandler = ({
   TaskQueueSid,
   TimestampMs,
 }: TaskRouterEvent): [CallEvent] => {
-  if (EventType !== 'task-queue.entered') {
-    throw new Error("Only tasks of type 'task-queue.entered' can be handled by taskQueueEnteredHandler.");
+  if (EventType !== TaskRouterEventTypes.taskQueueEntered) {
+    throw new Error(`Only tasks of type ${TaskRouterEventTypes.taskQueueEntered} can be handled by taskQueueEnteredHandler.`);
   }
 
   if (!TaskAttributes) {

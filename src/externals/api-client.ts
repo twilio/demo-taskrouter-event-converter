@@ -73,7 +73,7 @@ export class ApiClient {
   /**
    * SendMultipleEventsToWebhook sends all the events provided, one by one, to the
    * target endpoint. The requests are made in parallel and, if an error is thrown in
-   * any request, the catch flow will be trigered.
+   * any request, the error flow will be trigered.
    *
    * @param events An array of generic Teravoz's Events. See more in [[TeravozEvent]]
    */
