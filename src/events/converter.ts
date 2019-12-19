@@ -1,7 +1,11 @@
 import { TeravozEvent } from './teravoz';
 
 /**
- * Abstract converter structure to be used as the conversion function to incomming Twilio's events
+ * Abstract converter structure to be used as the conversion function from incoming Twilio's events
+ * into Teravoz's events.
+ *
+ * In some cases, a Twilio's event is converted in more than one Teravoz's event. Therefore,
+ * the converter always return an array that contains zero or more converted events.
  *
  * @param mapping the event conversion mapping, that should be an object with the Twilio's
  * event identifier as key and the handler function to convert it to TeravozEvent[] as value.

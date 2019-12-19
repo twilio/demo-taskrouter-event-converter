@@ -20,7 +20,7 @@ import { TaskRouterEvent, TaskRouterEventTypes } from '../../twilio';
  * |  timestamp   |       TimestampMs        |    Timestamp UTC's string     |
  * |     sid      |           Sid            |      Twilio's Event Sid       |
  *
- * @param taskRouterEvent the incomming taskRouterEvent to be converted.
+ * @param taskRouterEvent the incoming taskRouterEvent to be converted.
  */
 export const taskQueueEnteredHandler = ({
   Sid,

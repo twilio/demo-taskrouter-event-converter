@@ -107,7 +107,7 @@ The structure of the converted events will be the follow:
 | timestamp |         TimestampMs          |              Timestamp UTC's string              |
 |    sid    |             Sid              |                Twilio's Event Sid                |
  *
- * @param taskRouterEvent The incomming TaskRouter's event to be converted to AgentEvents
+ * @param taskRouterEvent The incoming TaskRouter's event to be converted to AgentEvents
  */
 export const workerActivityUpdateHandler = (taskRouterEvent: TaskRouterEvent): AgentEvent[] => {
   const {

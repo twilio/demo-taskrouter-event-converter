@@ -7,14 +7,14 @@ import { gatherInputConverter } from '../events/gather-input';
 import { TwilioCustomDialerEvent, dialerEventsConverter } from '../events/dialer';
 
 /**
- * webhookHandler handles all the incomming TaskRouter's events.
+ * webhookHandler handles all the incoming TaskRouter's events.
  *
  * The TaskRouter events callback should be configurated to the endpoint
  * that use this function as his handler. The handler will listen to all
  * the TaskRouter's events, transforming the mapped events and ignoring
  * the unmapped ones.
  *
- * @param req Express incomming request object
+ * @param req Express incoming request object
  * @param res Express response object
  */
 const webhookHandler = async (req: Request, res: Response): Promise<void> => {
@@ -43,7 +43,7 @@ const webhookHandler = async (req: Request, res: Response): Promise<void> => {
  * who listen to all the TaskRouter's events emitted, this handler has to be called
  * manually to trigger his respectives Teravoz's event.
  *
- * @param req Express incomming request object
+ * @param req Express incoming request object
  * @param res Express response object
  */
 const inputHandler = async (req: Request, res: Response): Promise<void> => {
@@ -74,7 +74,7 @@ const inputHandler = async (req: Request, res: Response): Promise<void> => {
  * Twilio's dialer is a custom implementation made by Teravoz, these events are also triggered
  * manually in the execution of the Twilio's dialer functions.
  *
- * @param req Express incomming request object
+ * @param req Express incoming request object
  * @param res Express response object
  */
 const dialerEventHandler = async (req: Request, res: Response): Promise<void> => {

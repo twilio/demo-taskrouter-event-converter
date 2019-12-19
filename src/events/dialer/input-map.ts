@@ -10,6 +10,11 @@ type EventsMapping = {
   [K in TwilioCustomDialerEventsTypes]?: Handler
 }
 
+/**
+ * eventsMapping maps each custom dialer event types to a handler
+ * that is responsible for convert it to zero or more Teravoz's
+ * events.
+ */
 export const eventsMapping: EventsMapping = {
   'custom.dialer.attempt': twilioDialerAttemptHandler,
   'custom.dialer.success': twilioDialerSuccessHandler,

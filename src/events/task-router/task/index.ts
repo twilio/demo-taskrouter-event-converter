@@ -25,7 +25,7 @@ import { TaskRouterEvent, TaskRouterEventTypes } from '../../twilio';
  * |  timestamp   |       TimestampMs        |  Timestamp UTC's string   |
  * |     sid      |           Sid            |    Twilio's Event Sid     |
  *
- * @param taskRouterEvent The incomming TaskRouter's event
+ * @param taskRouterEvent The incoming TaskRouter's event
  */
 export const taskCreatedHandler = ({
   Sid, EventType, TaskAttributes, TimestampMs,
@@ -73,7 +73,7 @@ export const taskCreatedHandler = ({
  * | timestamp |      TimestampMs       |       Timestamp UTC's string        |
  * |    sid    |          Sid           |         Twilio's Event Sid          |
  *
- * @param taskRouterEvent The incomming TaskRouter's event
+ * @param taskRouterEvent The incoming TaskRouter's event
  */
 export const taskCanceledHandler = ({
   Sid, EventType, TaskAttributes, TimestampMs,
@@ -128,7 +128,7 @@ export const taskCanceledHandler = ({
  * |  timestamp   |       TimestampMs        |     Timestamp UTC's string     |
  * |     sid      |           Sid            |       Twilio's Event Sid       |
  *
- * @param taskRouterEvent The incomming TaskRouter's event
+ * @param taskRouterEvent The incoming TaskRouter's event
  */
 export const taskWrapupHandler = ({
   Sid, EventType, TaskAttributes, TimestampMs, WorkerName = '', WorkerAttributes, TaskQueueSid,

@@ -23,7 +23,7 @@ import { TaskRouterEvent, TaskRouterEventTypes } from '../../twilio';
 | timestamp |         TimestampMs          |     Timestamp UTC's string     |
 |    sid    |             Sid              |       Twilio's Event Sid       |
 
- * @param TaskRouterEvent The incomming TaskRouter's event
+ * @param TaskRouterEvent The incoming TaskRouter's event
  */
 export const reservationCreatedHandler = ({
   Sid, EventType, TaskAttributes, WorkerName = '', WorkerAttributes, TaskQueueSid, TimestampMs,
@@ -89,7 +89,7 @@ export const reservationCreatedHandler = ({
 |  timestamp   |       TimestampMs        |    Timestamp UTC's string     |
 |     sid      |           Sid            |      Twilio's Event Sid       |
 
- * @param TaskRouterEvent The incomming TaskRouter's event
+ * @param TaskRouterEvent The incoming TaskRouter's event
  */
 export const reservationAcceptedHandler = ({
   Sid, EventType, TaskAttributes, WorkerName = '', WorkerAttributes, TaskQueueSid, TimestampMs,
@@ -157,7 +157,7 @@ export const reservationAcceptedHandler = ({
 | timestamp |         TimestampMs          |     Timestamp UTC's string      |
 |    sid    |             Sid              |       Twilio's Event Sid        |
 
- * @param TaskRouterEvent The incomming TaskRouter's event
+ * @param TaskRouterEvent The incoming TaskRouter's event
  */
 export const reservationRejectedHandler = ({
   Sid, EventType, TaskAttributes, WorkerAttributes, WorkerName = '', TaskAge, TaskQueueSid, TimestampMs,
