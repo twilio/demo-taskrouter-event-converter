@@ -1,5 +1,5 @@
 import { UserInput, UserInputTypes } from '../index';
-import { CallEvent, CallEvents } from '../../teravoz';
+import { CallEvent, CallEvents } from '../../../teravoz';
 import { getTime } from '../../../date';
 
 /**

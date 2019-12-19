@@ -104,3 +104,10 @@ export interface TaskRouterEvent extends TaskEventFields, WorkerEventFields, Tas
   Timestamp: string | number;
   TimestampMs: string | number;
 }
+
+/**
+ * Checks if a event is a task related event or not
+ *
+ * @param type the Event to be checked
+ */
+export const isTaskEvent = (event: TaskRouterEvent): boolean => event.EventType.startsWith('task.');

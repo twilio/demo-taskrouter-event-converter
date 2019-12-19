@@ -1,4 +1,4 @@
-import { TeravozEvent } from '../teravoz';
+import { TeravozEvent } from '../../teravoz';
 import { inputMapping } from './input-map';
 import { converter } from '../converter';
 

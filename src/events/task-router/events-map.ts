@@ -2,8 +2,8 @@ import { taskCreatedHandler, taskCanceledHandler, taskWrapupHandler } from './ta
 import { reservationAcceptedHandler, reservationRejectedHandler, reservationCreatedHandler } from './reservation';
 import { workerActivityUpdateHandler } from './worker';
 import { taskQueueEnteredHandler } from './task-queue';
-import { TeravozEvent } from '../teravoz';
-import { TaskRouterEventTypes, TaskRouterEvent } from '../twilio';
+import { TeravozEvent } from '../../teravoz';
+import { TaskRouterEventTypes, TaskRouterEvent } from '../../twilio';
 
 /**
  * Handler defines a type of a TaskRouter's event handler function,

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { TaskRouterEvent } from '../events/twilio';
+import { TaskRouterEvent } from '../twilio';
 import { logger } from '../logger';
 
 /**

@@ -1,7 +1,7 @@
 import fetch, { Headers } from 'node-fetch';
 import { environment } from '../environment';
 import { logger } from '../logger';
-import { TeravozEvent } from '../events/teravoz';
+import { TeravozEvent } from '../teravoz';
 
 /**
  * WebhookResponse represents the object structure that will be returned

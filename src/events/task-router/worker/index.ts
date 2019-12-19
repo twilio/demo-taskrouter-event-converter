@@ -1,6 +1,6 @@
-import { AgentEvents, AgentEvent } from '../../teravoz';
+import { AgentEvents, AgentEvent } from '../../../teravoz';
 import { getTime } from '../../../date';
-import { TaskRouterEvent, TaskRouterEventTypes } from '../../twilio';
+import { TaskRouterEvent, TaskRouterEventTypes } from '../../../twilio';
 import { logger } from '../../../logger';
 
 /**

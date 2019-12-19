@@ -1,8 +1,8 @@
 import {
   CallEvent, CallEvents, AgentEvent, AgentEvents,
-} from '../../teravoz';
+} from '../../../teravoz';
 import { getTime } from '../../../date';
-import { TaskRouterEvent, TaskRouterEventTypes } from '../../twilio';
+import { TaskRouterEvent, TaskRouterEventTypes } from '../../../twilio';
 
 /**
  * taskCreatedHandler converts the `task.created` TaskRouter's
@@ -104,11 +104,11 @@ export const taskCanceledHandler = ({
  *
  * The mapped events structure will be:
  *
- * ### agent.left
+ * ### actor.left
  *
  * |  Teravoz  |           Twilio            |            Value            |
  * |:---------:|:---------------------------:|:---------------------------:|
- * |   type    |          EventType          | Converted into "agent.left" |
+ * |   type    |          EventType          | Converted into "actor.left" |
  * |  call_id  |   TaskAttributes.call_id    |   TaskAttributes.call_id    |
  * |   actor   |         WorkerName          |         WorkerName          |
  * |  number   | WorkerAttributes.client_uri | WorkerAttributes.client_uri |

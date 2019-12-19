@@ -1,6 +1,6 @@
 import { eventsMapping } from './events-map';
-import { TeravozEvent } from '../teravoz';
-import { TaskRouterEvent } from '../twilio';
+import { TeravozEvent } from '../../teravoz';
+import { TaskRouterEvent } from '../../twilio';
 import { converter } from '../converter';
 
 /**

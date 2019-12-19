@@ -1,4 +1,4 @@
-import { TeravozEvent } from '../teravoz';
+import { TeravozEvent } from '../../teravoz';
 import { userInputNpsHandler } from './nps';
 import { UserInput, UserInputTypes } from '.';
 

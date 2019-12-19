@@ -1,4 +1,4 @@
-import { TeravozEvent, TeravozAmdStatus } from '../teravoz';
+import { TeravozEvent, TeravozAmdStatus } from '../../teravoz';
 import { converter } from '../converter';
 import { eventsMapping } from './input-map';
 

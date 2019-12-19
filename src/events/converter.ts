@@ -1,4 +1,4 @@
-import { TeravozEvent } from './teravoz';
+import { TeravozEvent } from '../teravoz';
 
 /**
  * Abstract converter structure to be used as the conversion function from incoming Twilio's events

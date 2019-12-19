@@ -1,5 +1,5 @@
 import { TwilioCustomDialerEvent, TwilioCustomDialerEventsTypes, twilioAmdStatusToTeravoz } from '..';
-import { DialerEvent, DialerEvents } from '../../teravoz';
+import { DialerEvent, DialerEvents } from '../../../teravoz';
 import { getTime } from '../../../date';
 
 /**

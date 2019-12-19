@@ -1,5 +1,5 @@
 import { reservationAcceptedHandler, reservationRejectedHandler, reservationCreatedHandler } from '.';
-import { TaskRouterEventTypes } from '../../twilio';
+import { TaskRouterEventTypes } from '../../../twilio';
 
 describe('Convert reservation.accepted', (): void => {
   test('Should convert reservation.accepted to agent.entered and call.ongoing', (): void => {

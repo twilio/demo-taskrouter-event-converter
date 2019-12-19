@@ -1,6 +1,6 @@
-import { CallEvent, CallEvents } from '../../teravoz';
+import { CallEvent, CallEvents } from '../../../teravoz';
 import { getTime } from '../../../date';
-import { TaskRouterEvent, TaskRouterEventTypes } from '../../twilio';
+import { TaskRouterEvent, TaskRouterEventTypes } from '../../../twilio';
 
 /**
  *

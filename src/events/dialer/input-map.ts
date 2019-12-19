@@ -1,4 +1,4 @@
-import { TeravozEvent } from '../teravoz';
+import { TeravozEvent } from '../../teravoz';
 import { TwilioCustomDialerEvent, TwilioCustomDialerEventsTypes } from '.';
 import { twilioDialerAttemptHandler } from './attempt';
 import { twilioDialerSuccessHandler } from './success';

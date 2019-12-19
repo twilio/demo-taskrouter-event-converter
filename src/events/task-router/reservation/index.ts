@@ -1,8 +1,8 @@
 import {
   AgentEvent, AgentEvents, CallEvent, CallEvents,
-} from '../../teravoz';
+} from '../../../teravoz';
 import { getTime } from '../../../date';
-import { TaskRouterEvent, TaskRouterEventTypes } from '../../twilio';
+import { TaskRouterEvent, TaskRouterEventTypes } from '../../../twilio';
 
 /**
  * reservationCreateHandler converts the TaskRouter's event `reservation.created`
