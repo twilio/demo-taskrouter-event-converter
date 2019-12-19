@@ -2,21 +2,42 @@ import {
   AgentEvent, AgentEvents, CallEvent, CallEvents,
 } from '../../teravoz';
 import { getTime } from '../../../date';
-import { TaskRouterEvent } from '../../twilio';
+import { TaskRouterEvent, TaskRouterEventTypes } from '../../twilio';
 
+/**
+ * reservationCreateHandler converts the TaskRouter's event `reservation.created`
+ * to the equivalent Teravoz's event `actor.ringing`.
+ *
+ * When a reservation is created at TaskRouter, the call starts ringing to the agent
+ * on the Twilio's Flex, where the agent can accept or decline the call.
+ *
+ * The structure of the converted event is described below:
+ *
+|  Teravoz  |      TaskRouter's Event      |             Value              |
+|:---------:|:----------------------------:|:------------------------------:|
+|   type    |          EventType           | Converted into "actor.ringing" |
+|  call_id  |   TaskAttributes.call_sid    |    TaskAttributes.call_sid     |
+|   actor   |          WorkerName          |           WorkerName           |
+|  number   | WorkerAttributes.contact_uri |  WorkerAttributes.contact_uri  |
+|   queue   |         TaskQueueSid         |          TaskQueueSid          |
+| timestamp |         TimestampMs          |     Timestamp UTC's string     |
+|    sid    |             Sid              |       Twilio's Event Sid       |
+
+ * @param TaskRouterEvent The incomming TaskRouter's event
+ */
 export const reservationCreatedHandler = ({
   Sid, EventType, TaskAttributes, WorkerName = '', WorkerAttributes, TaskQueueSid, TimestampMs,
 }: TaskRouterEvent): [AgentEvent] => {
-  if (EventType !== 'reservation.created') {
-    throw new Error("Only tasks of type 'reservation.created' can be handled by reservationCreatedHandler.");
+  if (EventType !== TaskRouterEventTypes.reservationCreated) {
+    throw new Error(`Only tasks of type '${TaskRouterEventTypes.reservationCreated}' can be handled by reservationCreatedHandler.`);
   }
 
   if (!TaskAttributes) {
-    throw new Error("Missing TaskAttributes in 'reservation.created' event.");
+    throw new Error(`Missing TaskAttributes in '${TaskRouterEventTypes.reservationCreated}' event.`);
   }
 
   if (!WorkerAttributes) {
-    throw new Error("Missing WorkerAttributes in 'reservation.created' event.");
+    throw new Error(`Missing WorkerAttributes in '${TaskRouterEventTypes.reservationCreated}' event.`);
   }
 
   const { call_sid: callId } = JSON.parse(TaskAttributes);
@@ -35,19 +56,54 @@ export const reservationCreatedHandler = ({
   ];
 };
 
+/**
+ * reservationAcceptedHandler converts the TaskRouter's event `reservation.accepted`
+ * into the Teravoz's events `actor.ringing` AND `call.ongoing`.
+ *
+ * When a reservation is accepted, the call gets out of the waiting state and the
+ * agent is connected to it. That's why either the `actor.ringing` and `call.ongoing`
+ * are converted from the same event.
+ *
+ * The structures of the converted events are described below:
+ *
+ * ### actor.entered
+ *
+|  Teravoz  |      TaskRouter's Event      |             Value              |
+|:---------:|:----------------------------:|:------------------------------:|
+|   type    |          EventType           | Converted into "actor.entered" |
+|  call_id  |   TaskAttributes.call_sid    |    TaskAttributes.call_sid     |
+|   actor   |          WorkerName          |           WorkerName           |
+|  number   | WorkerAttributes.contact_uri |  WorkerAttributes.contact_uri  |
+|   queue   |         TaskQueueSid         |          TaskQueueSid          |
+| timestamp |         TimestampMs          |     Timestamp UTC's string     |
+|    sid    |             Sid              |       Twilio's Event Sid       |
+
+ * ### call.ongoing
+|   Teravoz    |          Twilio          |             Value             |
+|:------------:|:------------------------:|:-----------------------------:|
+|     type     |        EventType         | Converted into "call.ongoing" |
+|   call_id    |  TaskAttributes.call_id  |    TaskAttributes.call_id     |
+|  direction   | TaskAttributes.direction |   TaskAttributes.direction    |
+|  our_number  |  TaskAttributes.called   |     TaskAttributes.called     |
+| their_number |   TaskAttributes.from    |      TaskAttributes.from      |
+|  timestamp   |       TimestampMs        |    Timestamp UTC's string     |
+|     sid      |           Sid            |      Twilio's Event Sid       |
+
+ * @param TaskRouterEvent The incomming TaskRouter's event
+ */
 export const reservationAcceptedHandler = ({
   Sid, EventType, TaskAttributes, WorkerName = '', WorkerAttributes, TaskQueueSid, TimestampMs,
 }: TaskRouterEvent): [AgentEvent, CallEvent] => {
-  if (EventType !== 'reservation.accepted') {
-    throw new Error("Only tasks of type 'reservation.accepted' can be handled by reservationAcceptedHandler.");
+  if (EventType !== TaskRouterEventTypes.reservationAccepted) {
+    throw new Error(`Only tasks of type '${TaskRouterEventTypes.reservationAccepted}' can be handled by reservationAcceptedHandler.`);
   }
 
   if (!TaskAttributes) {
-    throw new Error("Missing TaskAttributes in 'reservation.accepted' event ");
+    throw new Error(`Missing TaskAttributes in '${TaskRouterEventTypes.reservationAccepted}' event `);
   }
 
   if (!WorkerAttributes) {
-    throw new Error("Missing WorkerAttributes in 'reservation.accepted' event ");
+    throw new Error(`Missing WorkerAttributes in '${TaskRouterEventTypes.reservationAccepted}' event `);
   }
 
   const {
@@ -80,19 +136,42 @@ export const reservationAcceptedHandler = ({
   ];
 };
 
+/**
+ * reservationRejectedHandler converts the TaskRouter's event `reservation.rejected`
+ * into the Teravoz event `actor.noanswer`
+ *
+ * A reservation is rejected either when the agent declines the call or if he doesn't
+ * answer the call in time. In these two cases, the reservation / call is considered
+ * not answered by the agent.
+ *
+ * The structures of the converted event is described below:
+ *
+|  Teravoz  |      TaskRouter's Event      |              Value              |
+|:---------:|:----------------------------:|:-------------------------------:|
+|   type    |          EventType           | Converted into "actor.noanswer" |
+|  call_id  |   TaskAttributes.call_sid    |     TaskAttributes.call_sid     |
+|   actor   |          WorkerName          |           WorkerName            |
+|  number   | WorkerAttributes.contact_uri |  WorkerAttributes.contact_uri   |
+|   queue   |         TaskQueueSid         |          TaskQueueSid           |
+| ringtime  |           TaskAge            |             TaskAge             |
+| timestamp |         TimestampMs          |     Timestamp UTC's string      |
+|    sid    |             Sid              |       Twilio's Event Sid        |
+
+ * @param TaskRouterEvent The incomming TaskRouter's event
+ */
 export const reservationRejectedHandler = ({
   Sid, EventType, TaskAttributes, WorkerAttributes, WorkerName = '', TaskAge, TaskQueueSid, TimestampMs,
 }: TaskRouterEvent): [AgentEvent] => {
-  if (EventType !== 'reservation.rejected') {
-    throw new Error("Only tasks of type 'reservation.rejected' can be handled by reservationRejectedHandler.");
+  if (EventType !== TaskRouterEventTypes.reservationRejected) {
+    throw new Error(`Only tasks of type '${TaskRouterEventTypes.reservationRejected}' can be handled by reservationRejectedHandler.`);
   }
 
   if (!TaskAttributes) {
-    throw new Error("Missing TaskAttributes in 'reservation.rejected' event ");
+    throw new Error(`Missing TaskAttributes in '${TaskRouterEventTypes.reservationRejected}' event `);
   }
 
   if (!WorkerAttributes) {
-    throw new Error("Missing WorkerAttributes in 'reservation.rejected' event ");
+    throw new Error(`Missing WorkerAttributes in '${TaskRouterEventTypes.reservationRejected}' event `);
   }
 
   const {

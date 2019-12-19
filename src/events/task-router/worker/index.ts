@@ -94,14 +94,9 @@ class WorkerActivityConverter {
 |   offline   | unavailable |        -         |
 |   offline   |   offline   |        -         |
 
-The structure of the converted events will be the follow:
+When there isn't a result mapped, an empty array will be returned by the function
 
-|  number   | WorkerAttributes.contact_uri |           WorkerAttributes.contact_uri           |
-|   actor   |          WorkerName          |                    WorkerName                    |
-|   queue   |  WorkerAttributes.queues[i]  |      (each) queue that the agent belongs to      |
-| timestamp |         TimestampMs          |              Timestamp UTC's string              |
-|    sid    |             Sid              |                Twilio's Event Sid                |
- * The structure of the events is described below:
+The structure of the converted events will be the follow:
  *
 |  Teravoz  |            Twilio            |                      Value                       |
 |:---------:|:----------------------------:|:------------------------------------------------:|
