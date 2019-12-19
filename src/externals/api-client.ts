@@ -38,9 +38,18 @@ export class ApiClient {
     try {
       logger.info(`Sending ${event.type} to webhook.`);
 
+      let toSend = event;
+
+      if (environment.suppressSid) {
+        toSend = {
+          ...event,
+          sid: undefined,
+        };
+      }
+
       const res = await fetch(this.baseURL, {
         method: 'POST',
-        body: JSON.stringify(event),
+        body: JSON.stringify(toSend),
         headers: new Headers({
           'Content-Type': 'application/json',
         }),

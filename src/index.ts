@@ -4,6 +4,7 @@ import { logger } from './logger';
 import { loadRoutesInto } from './routes';
 import { botFilterMiddleware } from './middlewares/bot-filter';
 import { taskFilterMiddleware } from './middlewares/task-filter';
+import { environment } from './environment';
 
 interface CommonRequestDetails {
   body: any;
@@ -58,5 +59,9 @@ const requestLogger = (
 
   app.listen('3000', () => {
     logger.info('Server running at http://localhost:3000');
+
+    if (environment.suppressSid) {
+      logger.info('Suppressing SID from generated events...');
+    }
   });
 })();
