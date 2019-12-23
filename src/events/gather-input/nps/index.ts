@@ -29,10 +29,15 @@ import { getTime } from '../../../date';
  * @param twilioCustomDialerEvent
  */
 export const userInputNpsHandler = ({
-  InputType, CallSid, Digits, TimestampMs,
+  InputType,
+  CallSid,
+  Digits,
+  TimestampMs,
 }: UserInput): [CallEvent] => {
   if (InputType !== UserInputTypes.npsProvided) {
-    throw new Error(`Only inputs of type '${UserInputTypes.npsProvided}' can be handled by userInputNpsHandler.`);
+    throw new Error(
+      `Only inputs of type '${UserInputTypes.npsProvided}' can be handled by userInputNpsHandler.`,
+    );
   }
 
   return [

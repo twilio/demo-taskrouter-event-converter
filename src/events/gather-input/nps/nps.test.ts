@@ -26,7 +26,7 @@ describe('Convert custom.nps-provided', (): void => {
     expect(event.sid).toBeFalsy(); // Custom events doesn't have a Sid.
   });
 
-  test('Should thrown an error if the event passed is different from \'custom.nps-provided\'', (): void => {
+  test("Should thrown an error if the event passed is different from 'custom.nps-provided'", (): void => {
     const invalidInput = {
       InputType: 'custom.anyevent',
       CallSid: 'CA123',

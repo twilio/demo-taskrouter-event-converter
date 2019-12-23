@@ -89,7 +89,9 @@ const dialerEventHandler = async (req: Request, res: Response): Promise<void> =>
     logger.info(`${responses.length} event(s) sended.`);
     logger.debug('Events responses: ', responses);
   } else {
-    logger.info(`Twilio's dialer event ${event.EventType} not found to convert to Teravoz's event. Ignoring.`);
+    logger.info(
+      `Twilio's dialer event ${event.EventType} not found to convert to Teravoz's event. Ignoring.`,
+    );
   }
 
   res.send(200).json();

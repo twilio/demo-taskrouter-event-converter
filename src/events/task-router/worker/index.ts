@@ -53,14 +53,16 @@ class WorkerActivityConverter {
   public mapEventsByQueues(type: AgentEvents): AgentEvent[] {
     const { WorkerName = '', TimestampMs, Sid } = this.event;
 
-    return this.queues.map((queue): AgentEvent => ({
-      type,
-      number: this.number,
-      actor: WorkerName,
-      timestamp: getTime(TimestampMs),
-      sid: Sid,
-      queue,
-    }));
+    return this.queues.map(
+      (queue): AgentEvent => ({
+        type,
+        number: this.number,
+        actor: WorkerName,
+        timestamp: getTime(TimestampMs),
+        sid: Sid,
+        queue,
+      }),
+    );
   }
 }
 
@@ -111,19 +113,28 @@ The structure of the converted events will be the follow:
  */
 export const workerActivityUpdateHandler = (taskRouterEvent: TaskRouterEvent): AgentEvent[] => {
   const {
-    EventType, WorkerActivityName, WorkerPreviousActivityName, WorkerAttributes,
+    EventType,
+    WorkerActivityName,
+    WorkerPreviousActivityName,
+    WorkerAttributes,
   } = taskRouterEvent;
 
   if (EventType !== TaskRouterEventTypes.workerActivityUpdate) {
-    throw new Error(`Only tasks of type '${TaskRouterEventTypes.workerActivityUpdate}' can be handled by workerActivityUpdateHandler.`);
+    throw new Error(
+      `Only tasks of type '${TaskRouterEventTypes.workerActivityUpdate}' can be handled by workerActivityUpdateHandler.`,
+    );
   }
 
   if (!WorkerAttributes) {
-    throw new Error(`Missing WorkerAttributes in '${TaskRouterEventTypes.workerActivityUpdate}' event.`);
+    throw new Error(
+      `Missing WorkerAttributes in '${TaskRouterEventTypes.workerActivityUpdate}' event.`,
+    );
   }
 
   if (!WorkerActivityName) {
-    throw new Error(`Missing WorkerActivityName in '${TaskRouterEventTypes.workerActivityUpdate} event.`);
+    throw new Error(
+      `Missing WorkerActivityName in '${TaskRouterEventTypes.workerActivityUpdate} event.`,
+    );
   }
 
   if (WorkerPreviousActivityName === WorkerActivityName) {
@@ -132,9 +143,10 @@ export const workerActivityUpdateHandler = (taskRouterEvent: TaskRouterEvent): A
 
   const { contact_uri: contactUri, queues = [] } = JSON.parse(WorkerAttributes);
 
-
   if (!queues.length) {
-    logger.warn(`Worker ${contactUri} doesn't belong to any queue. Events will be not emitted for this worker.`);
+    logger.warn(
+      `Worker ${contactUri} doesn't belong to any queue. Events will be not emitted for this worker.`,
+    );
     return [];
   }
 
@@ -142,7 +154,10 @@ export const workerActivityUpdateHandler = (taskRouterEvent: TaskRouterEvent): A
 
   switch (WorkerActivityName.toLowerCase()) {
     case workerStatus.available: {
-      if (WorkerPreviousActivityName && WorkerPreviousActivityName.toLowerCase() === workerStatus.break) {
+      if (
+        WorkerPreviousActivityName &&
+        WorkerPreviousActivityName.toLowerCase() === workerStatus.break
+      ) {
         return converter.mapEventsByQueues(AgentEvents.unpaused);
       }
 
@@ -150,8 +165,10 @@ export const workerActivityUpdateHandler = (taskRouterEvent: TaskRouterEvent): A
     }
     case workerStatus.unavailable:
     case workerStatus.offline:
-      if (WorkerPreviousActivityName
-          && WorkerPreviousActivityName.toLowerCase() !== workerStatus.unavailable) {
+      if (
+        WorkerPreviousActivityName &&
+        WorkerPreviousActivityName.toLowerCase() !== workerStatus.unavailable
+      ) {
         return converter.mapEventsByQueues(AgentEvents.loggedOut);
       }
 

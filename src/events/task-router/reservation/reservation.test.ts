@@ -1,4 +1,8 @@
-import { reservationAcceptedHandler, reservationRejectedHandler, reservationCreatedHandler } from '.';
+import {
+  reservationAcceptedHandler,
+  reservationRejectedHandler,
+  reservationCreatedHandler,
+} from '.';
 import { TaskRouterEventTypes } from '../../../twilio';
 
 describe('Convert reservation.accepted', (): void => {
@@ -107,7 +111,6 @@ describe('Convert reservation.accepted', (): void => {
       called: '5511911111111',
       from: '5511922222222',
     };
-
 
     const invalidInput = {
       EventType: TaskRouterEventTypes.reservationAccepted,
@@ -229,7 +232,6 @@ describe('Convert reservation.rejected', (): void => {
       called: '5511911111111',
       from: '5511922222222',
     };
-
 
     const invalidInput = {
       EventType: 'reservation.rejected',

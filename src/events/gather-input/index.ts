@@ -8,7 +8,7 @@ import { converter } from '../converter';
  * so it can be changed or added as you will
  */
 export enum UserInputTypes {
-  npsProvided = 'custom.nps-provided'
+  npsProvided = 'custom.nps-provided',
 }
 
 /**
@@ -30,4 +30,5 @@ export interface UserInput {
  *
  * @param event The input to be converted
  */
-export const gatherInputConverter = (event: UserInput): TeravozEvent[] => converter(inputMapping, event.InputType, event);
+export const gatherInputConverter = (event: UserInput): TeravozEvent[] =>
+  converter(inputMapping, event.InputType, event);

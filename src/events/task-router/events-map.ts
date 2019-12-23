@@ -1,5 +1,9 @@
 import { taskCreatedHandler, taskCanceledHandler, taskWrapupHandler } from './task';
-import { reservationAcceptedHandler, reservationRejectedHandler, reservationCreatedHandler } from './reservation';
+import {
+  reservationAcceptedHandler,
+  reservationRejectedHandler,
+  reservationCreatedHandler,
+} from './reservation';
 import { workerActivityUpdateHandler } from './worker';
 import { taskQueueEnteredHandler } from './task-queue';
 import { TeravozEvent } from '../../teravoz';
@@ -9,7 +13,7 @@ import { TaskRouterEventTypes, TaskRouterEvent } from '../../twilio';
  * Handler defines a type of a TaskRouter's event handler function,
  * that can be used to convert to an array of Teravoz's events.
  */
-type Handler = (event: TaskRouterEvent) => TeravozEvent[]
+type Handler = (event: TaskRouterEvent) => TeravozEvent[];
 
 /**
  * EventsMapping defines the structure of an Javascript Object that

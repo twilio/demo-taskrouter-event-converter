@@ -30,16 +30,16 @@ export const taskQueueEnteredHandler = ({
   TimestampMs,
 }: TaskRouterEvent): [CallEvent] => {
   if (EventType !== TaskRouterEventTypes.taskQueueEntered) {
-    throw new Error(`Only tasks of type ${TaskRouterEventTypes.taskQueueEntered} can be handled by taskQueueEnteredHandler.`);
+    throw new Error(
+      `Only tasks of type ${TaskRouterEventTypes.taskQueueEntered} can be handled by taskQueueEnteredHandler.`,
+    );
   }
 
   if (!TaskAttributes) {
     throw new Error("Missing TaskAttributes in 'task-queue.entered' event.");
   }
 
-  const {
-    call_sid: callId, direction, called, from,
-  } = JSON.parse(TaskAttributes);
+  const { call_sid: callId, direction, called, from } = JSON.parse(TaskAttributes);
 
   return [
     {

@@ -23,9 +23,7 @@ describe('Convert task.created', (): void => {
     expect(events).toBeInstanceOf(Array);
     expect(events.length).toBe(1);
 
-    const [{
-      type, call_id, direction, our_number, their_number, timestamp, sid,
-    }] = events;
+    const [{ type, call_id, direction, our_number, their_number, timestamp, sid }] = events;
 
     expect(type).toBe('call.new');
     expect(call_id).toBe(taskAttr.call_sid);
@@ -57,7 +55,7 @@ describe('Convert task.created', (): void => {
     }).toThrow();
   });
 
-  test('Should throw an error if the event\'s TaskAttributes are not provided', (): void => {
+  test("Should throw an error if the event's TaskAttributes are not provided", (): void => {
     const wrongInput = {
       EventType: 'task.created',
       TimestampMs: Date.now(),
@@ -91,9 +89,7 @@ describe('Convert task.canceled', (): void => {
     expect(events).toBeInstanceOf(Array);
     expect(events.length).toBe(1);
 
-    const [{
-      type, call_id, timestamp, sid,
-    }] = events;
+    const [{ type, call_id, timestamp, sid }] = events;
 
     expect(type).toBe('call.queue-abandon');
     expect(call_id).toBe(taskAttr.call_sid);
@@ -119,7 +115,7 @@ describe('Convert task.canceled', (): void => {
     }).toThrow();
   });
 
-  test('Should throw an error if the event\'s TaskAttributes are not provided', (): void => {
+  test("Should throw an error if the event's TaskAttributes are not provided", (): void => {
     const invalidInput = {
       EventType: 'task.canceled',
       TimestampMs: Date.now(),

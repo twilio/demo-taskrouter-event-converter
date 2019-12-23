@@ -26,7 +26,7 @@ describe('Convert custom.dialer.success', (): void => {
     expect(event.timestamp).toStrictEqual(expect.any(String));
   });
 
-  test('Should thrown an error if the event passed is different from \'custom.dialer.success\'', (): void => {
+  test("Should thrown an error if the event passed is different from 'custom.dialer.success'", (): void => {
     const input = {
       EventType: 'custom.dialer.wrongtype',
       CallSid: 'CA123',

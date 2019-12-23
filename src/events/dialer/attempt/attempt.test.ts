@@ -23,7 +23,7 @@ describe('Convert custom.dialer.attempt', (): void => {
     expect(event.timestamp).toStrictEqual(expect.any(String));
   });
 
-  test('Should thrown an error if the event passed is different from \'custom.dialer.attempt\'', (): void => {
+  test("Should thrown an error if the event passed is different from 'custom.dialer.attempt'", (): void => {
     const taskAttr = {
       code: 'abcdef-12345-abcdef',
     };

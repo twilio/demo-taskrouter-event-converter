@@ -52,7 +52,7 @@ export enum AgentEvents {
   noanswer = 'actor.noanswer',
   paused = 'actor.paused',
   ringing = 'actor.ringing',
-  unpaused = 'actor.unpaused'
+  unpaused = 'actor.unpaused',
 }
 
 /**
@@ -83,7 +83,13 @@ export enum DialerEvents {
 }
 
 export type TeravozAmdStatus = 'human' | 'machine' | 'notsure';
-export type FailureReasons = 'machine' | 'notsure' | 'noanswer' | 'busy' | 'unavailable' | 'invalid'
+export type FailureReasons =
+  | 'machine'
+  | 'notsure'
+  | 'noanswer'
+  | 'busy'
+  | 'unavailable'
+  | 'invalid';
 
 /**
  * DialerEvent is the representation of a Teravoz's dialer event. It represents all the event

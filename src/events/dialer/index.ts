@@ -20,7 +20,7 @@ export enum TwilioCustomDialerEventsTypes {
  * that uses the Twilio Answering Machine Detection.
  */
 export type TwilioAmdStatus =
-  'machine_start'
+  | 'machine_start'
   | 'machine_end_beep'
   | 'machine_end_silence'
   | 'machine_end_other'
@@ -70,4 +70,5 @@ export const twilioAmdStatusToTeravoz = (amdStatus?: TwilioAmdStatus): TeravozAm
   return mapping[amdStatus];
 };
 
-export const dialerEventsConverter = (event: TwilioCustomDialerEvent): TeravozEvent[] => converter(eventsMapping, event.EventType, event);
+export const dialerEventsConverter = (event: TwilioCustomDialerEvent): TeravozEvent[] =>
+  converter(eventsMapping, event.EventType, event);

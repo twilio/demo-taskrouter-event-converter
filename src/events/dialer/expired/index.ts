@@ -23,17 +23,23 @@ import { getTime } from '../../../date';
  * @param twilioCustomDialerEvent
  */
 export const twilioDialerExpiredHandler = ({
-  EventType, TimestampMs, TaskAttributes,
+  EventType,
+  TimestampMs,
+  TaskAttributes,
 }: TwilioCustomDialerEvent): [DialerEvent] => {
   if (EventType !== TwilioCustomDialerEventsTypes.dialerExpired) {
-    throw new Error(`Only inputs of type '${TwilioCustomDialerEventsTypes.dialerExpired}' can be handled by twilioDialerExpiredHandler.`);
+    throw new Error(
+      `Only inputs of type '${TwilioCustomDialerEventsTypes.dialerExpired}' can be handled by twilioDialerExpiredHandler.`,
+    );
   }
 
   const taskAttributes = TaskAttributes && JSON.parse(TaskAttributes);
 
-  return [{
-    type: DialerEvents.dialerExpired,
-    code: taskAttributes && taskAttributes.code,
-    timestamp: getTime(TimestampMs),
-  }];
+  return [
+    {
+      type: DialerEvents.dialerExpired,
+      code: taskAttributes && taskAttributes.code,
+      timestamp: getTime(TimestampMs),
+    },
+  ];
 };

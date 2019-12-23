@@ -24,17 +24,23 @@ import { getTime } from '../../../date';
  * @param twilioCustomDialerEvent
  */
 export const twilioDialerExceededHandler = ({
-  EventType, TimestampMs, TaskAttributes,
+  EventType,
+  TimestampMs,
+  TaskAttributes,
 }: TwilioCustomDialerEvent): [DialerEvent] => {
   if (EventType !== TwilioCustomDialerEventsTypes.dialerExceeded) {
-    throw new Error(`Only inputs of type '${TwilioCustomDialerEventsTypes.dialerExceeded}' can be handled by twilioDialerExceededHandler.`);
+    throw new Error(
+      `Only inputs of type '${TwilioCustomDialerEventsTypes.dialerExceeded}' can be handled by twilioDialerExceededHandler.`,
+    );
   }
 
   const taskAttributes = TaskAttributes && JSON.parse(TaskAttributes);
 
-  return [{
-    type: DialerEvents.dialerExceeded,
-    code: taskAttributes && taskAttributes.code,
-    timestamp: getTime(TimestampMs),
-  }];
+  return [
+    {
+      type: DialerEvents.dialerExceeded,
+      code: taskAttributes && taskAttributes.code,
+      timestamp: getTime(TimestampMs),
+    },
+  ];
 };

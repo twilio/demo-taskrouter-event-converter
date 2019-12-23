@@ -10,4 +10,5 @@ import { converter } from '../converter';
  *
  * @param event The original TaskRouter event to be converted
  */
-export const taskRouterEventConverter = (event: TaskRouterEvent): TeravozEvent[] => converter(eventsMapping, event.EventType, event);
+export const taskRouterEventConverter = (event: TaskRouterEvent): TeravozEvent[] =>
+  converter(eventsMapping, event.EventType, event);

@@ -9,8 +9,8 @@ import { twilioDialerExceededHandler } from './exceeded';
 type Handler = (event: TwilioCustomDialerEvent) => TeravozEvent[];
 
 type EventsMapping = {
-  [K in TwilioCustomDialerEventsTypes]?: Handler
-}
+  [K in TwilioCustomDialerEventsTypes]?: Handler;
+};
 
 /**
  * eventsMapping maps each custom dialer event types to a handler

@@ -18,7 +18,6 @@ describe('Test TaskFilterMiddleware', () => {
       }),
     };
 
-
     const next = jest.fn();
     taskFilterMiddleware(req as any, res as any, next);
 
@@ -43,7 +42,6 @@ describe('Test TaskFilterMiddleware', () => {
       }),
     };
 
-
     const next = jest.fn();
     taskFilterMiddleware(req as any, res as any, next);
 
@@ -67,7 +65,6 @@ describe('Test TaskFilterMiddleware', () => {
         json: jest.fn(),
       }),
     };
-
 
     const next = jest.fn();
     taskFilterMiddleware(req as any, res as any, next);

@@ -1,6 +1,4 @@
-import {
-  CallEvent, CallEvents, AgentEvent, AgentEvents,
-} from '../../../teravoz';
+import { CallEvent, CallEvents, AgentEvent, AgentEvents } from '../../../teravoz';
 import { getTime } from '../../../date';
 import { TaskRouterEvent, TaskRouterEventTypes } from '../../../twilio';
 
@@ -28,19 +26,22 @@ import { TaskRouterEvent, TaskRouterEventTypes } from '../../../twilio';
  * @param taskRouterEvent The incoming TaskRouter's event
  */
 export const taskCreatedHandler = ({
-  Sid, EventType, TaskAttributes, TimestampMs,
+  Sid,
+  EventType,
+  TaskAttributes,
+  TimestampMs,
 }: TaskRouterEvent): [CallEvent] => {
   if (EventType !== TaskRouterEventTypes.taskCreated) {
-    throw new Error(`Only tasks of type '${TaskRouterEventTypes.taskCreated}' can be handled by taskCreatedHandler.`);
+    throw new Error(
+      `Only tasks of type '${TaskRouterEventTypes.taskCreated}' can be handled by taskCreatedHandler.`,
+    );
   }
 
   if (!TaskAttributes) {
     throw new Error(`Missing TaskAttributes in '${TaskRouterEventTypes.taskCreated}' event.`);
   }
 
-  const {
-    call_sid: callId, direction, called, from,
-  } = JSON.parse(TaskAttributes);
+  const { call_sid: callId, direction, called, from } = JSON.parse(TaskAttributes);
 
   return [
     {
@@ -76,10 +77,15 @@ export const taskCreatedHandler = ({
  * @param taskRouterEvent The incoming TaskRouter's event
  */
 export const taskCanceledHandler = ({
-  Sid, EventType, TaskAttributes, TimestampMs,
+  Sid,
+  EventType,
+  TaskAttributes,
+  TimestampMs,
 }: TaskRouterEvent): CallEvent[] => {
   if (EventType !== TaskRouterEventTypes.taskCanceled) {
-    throw new Error(`Only tasks of type '${TaskRouterEventTypes.taskCanceled}' can be handled by taskCanceledhandler.`);
+    throw new Error(
+      `Only tasks of type '${TaskRouterEventTypes.taskCanceled}' can be handled by taskCanceledhandler.`,
+    );
   }
 
   if (!TaskAttributes) {
@@ -131,10 +137,18 @@ export const taskCanceledHandler = ({
  * @param taskRouterEvent The incoming TaskRouter's event
  */
 export const taskWrapupHandler = ({
-  Sid, EventType, TaskAttributes, TimestampMs, WorkerName = '', WorkerAttributes, TaskQueueSid,
+  Sid,
+  EventType,
+  TaskAttributes,
+  TimestampMs,
+  WorkerName = '',
+  WorkerAttributes,
+  TaskQueueSid,
 }: TaskRouterEvent): [CallEvent, AgentEvent] => {
   if (EventType !== TaskRouterEventTypes.taskWrapup) {
-    throw new Error(`Only tasks of type '${TaskRouterEventTypes.taskWrapup}' can be handled by taskWrapupHandler.`);
+    throw new Error(
+      `Only tasks of type '${TaskRouterEventTypes.taskWrapup}' can be handled by taskWrapupHandler.`,
+    );
   }
 
   if (!TaskAttributes) {
@@ -145,13 +159,9 @@ export const taskWrapupHandler = ({
     throw new Error(`Missing WorkerAttributes in '${TaskRouterEventTypes.taskWrapup}' event.`);
   }
 
-  const {
-    call_sid: callId, direction, called, from,
-  } = JSON.parse(TaskAttributes);
+  const { call_sid: callId, direction, called, from } = JSON.parse(TaskAttributes);
 
-  const {
-    contact_uri: contactUri,
-  } = JSON.parse(WorkerAttributes);
+  const { contact_uri: contactUri } = JSON.parse(WorkerAttributes);
 
   const timestamp = getTime(TimestampMs);
 

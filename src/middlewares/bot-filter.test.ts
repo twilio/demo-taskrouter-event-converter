@@ -17,7 +17,6 @@ describe('Test BotFilterMiddleware', () => {
       }),
     };
 
-
     const next = jest.fn();
     botFilterMiddleware(req as any, res as any, next);
 
@@ -38,7 +37,6 @@ describe('Test BotFilterMiddleware', () => {
         json: jest.fn(),
       }),
     };
-
 
     const next = jest.fn();
     botFilterMiddleware(req as any, res as any, next);

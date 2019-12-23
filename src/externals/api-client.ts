@@ -88,7 +88,7 @@ export class ApiClient {
    */
   public async sendMultipleEventsToWebhook(events: TeravozEvent[]): Promise<WebhookResponse[]> {
     try {
-      const promises = events.map((event) => this.sendEventToWebhook(event));
+      const promises = events.map(event => this.sendEventToWebhook(event));
 
       return await Promise.all(promises);
     } catch (err) {

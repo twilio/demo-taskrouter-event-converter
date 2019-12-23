@@ -36,7 +36,7 @@ export enum TaskRouterEventTypes {
   workerAttributesUpdate = 'worker.attributes.update',
   workerCapacityUpdate = 'worker.capacity.update',
   workerChannelAvailabilityUpdate = 'worker.channel.availability.update',
-  workerDeleted = 'worker.deleted'
+  workerDeleted = 'worker.deleted',
 }
 
 /**

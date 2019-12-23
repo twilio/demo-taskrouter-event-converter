@@ -15,13 +15,10 @@ interface CommonRequestDetails {
   query: Record<string, any>;
   ip?: string | string[];
   status?: number;
-
 }
 
 const getCommonRequestDetails = (req: express.Request): CommonRequestDetails => {
-  const {
-    method, statusCode, headers, url, connection, body, params, query,
-  } = req;
+  const { method, statusCode, headers, url, connection, body, params, query } = req;
 
   return {
     body,

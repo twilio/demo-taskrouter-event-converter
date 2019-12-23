@@ -22,7 +22,7 @@ describe('Convert custom.dialer.expired', (): void => {
     expect(event.timestamp).toStrictEqual(expect.any(String));
   });
 
-  test('Should thrown an error if the event passed is different from \'custom.dialer.expired\'', (): void => {
+  test("Should thrown an error if the event passed is different from 'custom.dialer.expired'", (): void => {
     const taskAttr = {
       code: 'abcdef-12345-abcdef',
     };

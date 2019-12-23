@@ -1,6 +1,4 @@
-import {
-  AgentEvent, AgentEvents, CallEvent, CallEvents,
-} from '../../../teravoz';
+import { AgentEvent, AgentEvents, CallEvent, CallEvents } from '../../../teravoz';
 import { getTime } from '../../../date';
 import { TaskRouterEvent, TaskRouterEventTypes } from '../../../twilio';
 
@@ -26,18 +24,30 @@ import { TaskRouterEvent, TaskRouterEventTypes } from '../../../twilio';
  * @param TaskRouterEvent The incoming TaskRouter's event
  */
 export const reservationCreatedHandler = ({
-  Sid, EventType, TaskAttributes, WorkerName = '', WorkerAttributes, TaskQueueSid, TimestampMs,
+  Sid,
+  EventType,
+  TaskAttributes,
+  WorkerName = '',
+  WorkerAttributes,
+  TaskQueueSid,
+  TimestampMs,
 }: TaskRouterEvent): [AgentEvent] => {
   if (EventType !== TaskRouterEventTypes.reservationCreated) {
-    throw new Error(`Only tasks of type '${TaskRouterEventTypes.reservationCreated}' can be handled by reservationCreatedHandler.`);
+    throw new Error(
+      `Only tasks of type '${TaskRouterEventTypes.reservationCreated}' can be handled by reservationCreatedHandler.`,
+    );
   }
 
   if (!TaskAttributes) {
-    throw new Error(`Missing TaskAttributes in '${TaskRouterEventTypes.reservationCreated}' event.`);
+    throw new Error(
+      `Missing TaskAttributes in '${TaskRouterEventTypes.reservationCreated}' event.`,
+    );
   }
 
   if (!WorkerAttributes) {
-    throw new Error(`Missing WorkerAttributes in '${TaskRouterEventTypes.reservationCreated}' event.`);
+    throw new Error(
+      `Missing WorkerAttributes in '${TaskRouterEventTypes.reservationCreated}' event.`,
+    );
   }
 
   const { call_sid: callId } = JSON.parse(TaskAttributes);
@@ -92,27 +102,35 @@ export const reservationCreatedHandler = ({
  * @param TaskRouterEvent The incoming TaskRouter's event
  */
 export const reservationAcceptedHandler = ({
-  Sid, EventType, TaskAttributes, WorkerName = '', WorkerAttributes, TaskQueueSid, TimestampMs,
+  Sid,
+  EventType,
+  TaskAttributes,
+  WorkerName = '',
+  WorkerAttributes,
+  TaskQueueSid,
+  TimestampMs,
 }: TaskRouterEvent): [AgentEvent, CallEvent] => {
   if (EventType !== TaskRouterEventTypes.reservationAccepted) {
-    throw new Error(`Only tasks of type '${TaskRouterEventTypes.reservationAccepted}' can be handled by reservationAcceptedHandler.`);
+    throw new Error(
+      `Only tasks of type '${TaskRouterEventTypes.reservationAccepted}' can be handled by reservationAcceptedHandler.`,
+    );
   }
 
   if (!TaskAttributes) {
-    throw new Error(`Missing TaskAttributes in '${TaskRouterEventTypes.reservationAccepted}' event `);
+    throw new Error(
+      `Missing TaskAttributes in '${TaskRouterEventTypes.reservationAccepted}' event `,
+    );
   }
 
   if (!WorkerAttributes) {
-    throw new Error(`Missing WorkerAttributes in '${TaskRouterEventTypes.reservationAccepted}' event `);
+    throw new Error(
+      `Missing WorkerAttributes in '${TaskRouterEventTypes.reservationAccepted}' event `,
+    );
   }
 
-  const {
-    call_sid: callId, direction, called, from,
-  } = JSON.parse(TaskAttributes);
+  const { call_sid: callId, direction, called, from } = JSON.parse(TaskAttributes);
 
-  const {
-    contact_uri: contactUri,
-  } = JSON.parse(WorkerAttributes);
+  const { contact_uri: contactUri } = JSON.parse(WorkerAttributes);
 
   return [
     {
@@ -160,27 +178,36 @@ export const reservationAcceptedHandler = ({
  * @param TaskRouterEvent The incoming TaskRouter's event
  */
 export const reservationRejectedHandler = ({
-  Sid, EventType, TaskAttributes, WorkerAttributes, WorkerName = '', TaskAge, TaskQueueSid, TimestampMs,
+  Sid,
+  EventType,
+  TaskAttributes,
+  WorkerAttributes,
+  WorkerName = '',
+  TaskAge,
+  TaskQueueSid,
+  TimestampMs,
 }: TaskRouterEvent): [AgentEvent] => {
   if (EventType !== TaskRouterEventTypes.reservationRejected) {
-    throw new Error(`Only tasks of type '${TaskRouterEventTypes.reservationRejected}' can be handled by reservationRejectedHandler.`);
+    throw new Error(
+      `Only tasks of type '${TaskRouterEventTypes.reservationRejected}' can be handled by reservationRejectedHandler.`,
+    );
   }
 
   if (!TaskAttributes) {
-    throw new Error(`Missing TaskAttributes in '${TaskRouterEventTypes.reservationRejected}' event `);
+    throw new Error(
+      `Missing TaskAttributes in '${TaskRouterEventTypes.reservationRejected}' event `,
+    );
   }
 
   if (!WorkerAttributes) {
-    throw new Error(`Missing WorkerAttributes in '${TaskRouterEventTypes.reservationRejected}' event `);
+    throw new Error(
+      `Missing WorkerAttributes in '${TaskRouterEventTypes.reservationRejected}' event `,
+    );
   }
 
-  const {
-    call_sid: callId,
-  } = JSON.parse(TaskAttributes);
+  const { call_sid: callId } = JSON.parse(TaskAttributes);
 
-  const {
-    contact_uri: contactUri,
-  } = JSON.parse(WorkerAttributes);
+  const { contact_uri: contactUri } = JSON.parse(WorkerAttributes);
 
   return [
     {
