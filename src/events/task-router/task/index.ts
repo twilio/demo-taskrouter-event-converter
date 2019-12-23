@@ -15,15 +15,15 @@ import { TaskRouterEvent, TaskRouterEventTypes } from '../../../twilio';
  *
  * The mapped structure will be:
  *
- * |   Teravoz    |          Twilio          |           Value           |
- * |:------------:|:------------------------:|:-------------------------:|
- * |     type     |        EventType         | Converted into "call.new" |
- * |   call_id    |  TaskAttributes.call_id  |  TaskAttributes.call_id   |
- * |  direction   | TaskAttributes.direction | TaskAttributes.direction  |
- * |  our_number  |  TaskAttributes.called   |   TaskAttributes.called   |
- * | their_number |   TaskAttributes.from    |    TaskAttributes.from    |
- * |  timestamp   |       TimestampMs        |  Timestamp UTC's string   |
- * |     sid      |           Sid            |    Twilio's Event Sid     |
+|   Teravoz    |    TaskRouter's Event    |           Value           |
+|:------------:|:------------------------:|:-------------------------:|
+|     type     |        EventType         | Converted into "call.new" |
+|   call_id    |  TaskAttributes.call_id  |  TaskAttributes.call_id   |
+|  direction   | TaskAttributes.direction | TaskAttributes.direction  |
+|  our_number  |  TaskAttributes.called   |   TaskAttributes.called   |
+| their_number |   TaskAttributes.from    |    TaskAttributes.from    |
+|  timestamp   |       TimestampMs        |  Timestamp UTC's string   |
+|     sid      |           Sid            |    Twilio's Event Sid     |
  *
  * @param taskRouterEvent The incoming TaskRouter's event
  */
@@ -66,12 +66,12 @@ export const taskCreatedHandler = ({
  *
  * The mapped structure will be:
  *
- * |  Teravoz  |         Twilio         |                Value                |
- * |:---------:|:----------------------:|:-----------------------------------:|
- * |   type    |       EventType        | Converted into "call.queue-abandon" |
- * |  call_id  | TaskAttributes.call_id |       TaskAttributes.call_id        |
- * | timestamp |      TimestampMs       |       Timestamp UTC's string        |
- * |    sid    |          Sid           |         Twilio's Event Sid          |
+|  Teravoz  |   TaskRouter's Event   |                Value                |
+|:---------:|:----------------------:|:-----------------------------------:|
+|   type    |       EventType        | Converted into "call.queue-abandon" |
+|  call_id  | TaskAttributes.call_id |       TaskAttributes.call_id        |
+| timestamp |      TimestampMs       |       Timestamp UTC's string        |
+|    sid    |          Sid           |         Twilio's Event Sid          |
  *
  * @param taskRouterEvent The incoming TaskRouter's event
  */
@@ -106,27 +106,27 @@ export const taskCanceledHandler = ({
  *
  * ### actor.left
  *
- * |  Teravoz  |           Twilio            |            Value            |
- * |:---------:|:---------------------------:|:---------------------------:|
- * |   type    |          EventType          | Converted into "actor.left" |
- * |  call_id  |   TaskAttributes.call_id    |   TaskAttributes.call_id    |
- * |   actor   |         WorkerName          |         WorkerName          |
- * |  number   | WorkerAttributes.client_uri | WorkerAttributes.client_uri |
- * |   queue   |        TaskQueueSid         |        TaskQueueSid         |
- * | timestamp |         TimestampMs         |   Timestamp UTC's string    |
- * |    sid    |             Sid             |     Twilio's Event Sid      |
+|  Teravoz  |     TaskRouter's Event      |            Value            |
+|:---------:|:---------------------------:|:---------------------------:|
+|   type    |          EventType          | Converted into "actor.left" |
+|  call_id  |   TaskAttributes.call_id    |   TaskAttributes.call_id    |
+|   actor   |         WorkerName          |         WorkerName          |
+|  number   | WorkerAttributes.client_uri | WorkerAttributes.client_uri |
+|   queue   |        TaskQueueSid         |        TaskQueueSid         |
+| timestamp |         TimestampMs         |   Timestamp UTC's string    |
+|    sid    |             Sid             |     Twilio's Event Sid      |
  *
- *  ### call.finished
+ * ### call.finished
  *
- * |   Teravoz    |          Twilio          |             Value              |
- * |:------------:|:------------------------:|:------------------------------:|
- * |     type     |        EventType         | Converted into "call.finished" |
- * |   call_id    |  TaskAttributes.call_id  |     TaskAttributes.call_id     |
- * |  direction   | TaskAttributes.direction |    TaskAttributes.direction    |
- * |  our_number  |  TaskAttributes.called   |     TaskAttributes.called      |
- * | their_number |   TaskAttributes.from    |      TaskAttributes.from       |
- * |  timestamp   |       TimestampMs        |     Timestamp UTC's string     |
- * |     sid      |           Sid            |       Twilio's Event Sid       |
+|   Teravoz    |    TaskRouter's Event    |             Value              |
+|:------------:|:------------------------:|:------------------------------:|
+|     type     |        EventType         | Converted into "call.finished" |
+|   call_id    |  TaskAttributes.call_id  |     TaskAttributes.call_id     |
+|  direction   | TaskAttributes.direction |    TaskAttributes.direction    |
+|  our_number  |  TaskAttributes.called   |     TaskAttributes.called      |
+| their_number |   TaskAttributes.from    |      TaskAttributes.from       |
+|  timestamp   |       TimestampMs        |     Timestamp UTC's string     |
+|     sid      |           Sid            |       Twilio's Event Sid       |
  *
  * @param taskRouterEvent The incoming TaskRouter's event
  */

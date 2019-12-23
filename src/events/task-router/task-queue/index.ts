@@ -7,18 +7,18 @@ import { TaskRouterEvent, TaskRouterEventTypes } from '../../../twilio';
  * TaskQueueEnteredHandler converts the `task-queue.entered` TaskRouter's
  * events to the equivalent Teravoz's event `call.waiting`.
  *
- * * The mapped structure will be:
+ * The mapped structure will be:
  *
- * |   Teravoz    |          Twilio          |             Value             |
- * |:------------:|:------------------------:|:-----------------------------:|
- * |     type     |        EventType         | Converted into "call.waiting" |
- * |   call_id    |  TaskAttributes.call_id  |    TaskAttributes.call_id     |
- * |  direction   | TaskAttributes.direction |   TaskAttributes.direction    |
- * |  our_number  |  TaskAttributes.called   |     TaskAttributes.called     |
- * | their_number |   TaskAttributes.from    |      TaskAttributes.from      |
- * |    queue     |       TaskQueueSid       |         TaskQueueSid          |
- * |  timestamp   |       TimestampMs        |    Timestamp UTC's string     |
- * |     sid      |           Sid            |      Twilio's Event Sid       |
+|   Teravoz    |    TaskRouter's Event    |             Value             |
+|:------------:|:------------------------:|:-----------------------------:|
+|     type     |        EventType         | Converted into "call.waiting" |
+|   call_id    |  TaskAttributes.call_id  |    TaskAttributes.call_id     |
+|  direction   | TaskAttributes.direction |   TaskAttributes.direction    |
+|  our_number  |  TaskAttributes.called   |     TaskAttributes.called     |
+| their_number |   TaskAttributes.from    |      TaskAttributes.from      |
+|    queue     |       TaskQueueSid       |         TaskQueueSid          |
+|  timestamp   |       TimestampMs        |    Timestamp UTC's string     |
+|     sid      |           Sid            |      Twilio's Event Sid       |
  *
  * @param taskRouterEvent the incoming taskRouterEvent to be converted.
  */
