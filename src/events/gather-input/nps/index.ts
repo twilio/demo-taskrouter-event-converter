@@ -3,7 +3,7 @@ import { CallEvent, CallEvents } from '../../../teravoz';
 import { getTime } from '../../../date';
 
 /**
- * twilioDialerSuccessHandler converts `custom.input.nps-provided` to the
+ * twilioDialerSuccessHandler converts `custom.nps-provided` to the
  * equivalent Teravoz's event `input.data-provided`
  *
  * The `custom.input.nps-provided` is triggered after the call is finished and

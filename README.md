@@ -1,5 +1,44 @@
-# Converted Events
+# TaskRouter Event Converter
 
+# Table of Contents
+
+- [Summary](#summary)
+  * [Task events](#task-events)
+  * [Task Queue Events](#task-queue-events)
+  * [Reservation Events](#reservation-events)
+  * [Worker Events](#worker-events)
+- [Dialer events](#dialer-events)
+- [Converted Inputs](#converted-inputs)
+- [Conversion Mapping](#conversion-mapping)
+  * [Call Events](#call-events)
+    + [call.new](#callnew)
+    + [call.waiting](#callwaiting)
+    + [call.ongoing](#callongoing)
+    + [call.queue-abandon](#callqueue-abandon)
+    + [call.finished](#callfinished)
+  * [Data events](#data-events)
+  * [Actor events](#actor-events)
+    + [actor.logged-in](#actorlogged-in)
+    + [actor.logged-out](#actorlogged-out)
+    + [actor.entered](#actorentered)
+    + [actor.left](#actorleft)
+    + [actor.ringing](#actorringing)
+    + [actor.noanswer](#actornoanswer)
+    + [actor.paused](#actorpaused)
+    + [actor.unpaused](#actorunpaused)
+  * [Dialer Events](#dialer-events)
+    + [dialer.attempt](#dialerattempt)
+    + [dialer.success](#dialersuccess)
+    + [dialer.failure](#dialerfailure)
+    + [dialer.expired](#dialerexpired)
+    + [dialer.exceeded](#dialerexceeded)
+- [Points to Review](#points-to-review)
+- [Missing fields](#missing-fields)
+  * [General](#general)
+  * [call.new](#callnew-1)
+  * [actor.* events](#actor-events)
+
+# Summary
 In general, most of the fields that exists on Teravoz's events could be converted from TaskRouter events. The main differences are on **number** fields when they're related to the agent. As in Twilio Flex the agents doesn't have a real peer number, the information present on this number fact is, actually, the `contact_uri` present on the Worker attributes. So,for an agent named `foo` is using flex, the number of the agent provided in the events will be equal to `client:foo`, and not a real peer number. 
 
 Also, when the `queue` attribute is converted, it is converted to the TaskQueue SID, that also is not a phone number.
@@ -51,7 +90,9 @@ Each conversion handler is docummented with the conversion of the fields from Ta
 
 Also, for reference, the conversion mapping of the fields from the events are described below.
 
-## call.new
+## Call Events
+
+### call.new
 
 Converted from EventType `task.created`, when a task (call) starts. 
 
@@ -65,7 +106,7 @@ Converted from EventType `task.created`, when a task (call) starts.
 |  timestamp   |       TimestampMs        |  Timestamp UTC's string   |
 |     sid      |           Sid            |    Twilio's Event Sid     |
 
-## call.waiting
+### call.waiting
 
 Converted from EventType `task-queue.entered`, when a task (call) enters
 in a queue and is waiting to be answered. 
@@ -81,13 +122,13 @@ in a queue and is waiting to be answered.
 |  timestamp   |       TimestampMs        |    Timestamp UTC's string     |
 |     sid      |           Sid            |      Twilio's Event Sid       |
 
-## call.ongoing
+### call.ongoing
 
 Converted from EventType `reservation.accepted`, when a worker accepts an incoming task (call).
 
 The `actor.entered` is originated from the same event.
 
-|   Teravoz    |          Twilio          |             Value             |
+|   Teravoz    |    TaskRouter's Event    |             Value             |
 |:------------:|:------------------------:|:-----------------------------:|
 |     type     |        EventType         | Converted into "call.ongoing" |
 |   call_id    |  TaskAttributes.call_id  |    TaskAttributes.call_id     |
@@ -98,7 +139,7 @@ The `actor.entered` is originated from the same event.
 |     sid      |           Sid            |      Twilio's Event Sid       |
 
 
-## call.queue-abandon
+### call.queue-abandon
 
 Converted from EventType `task.canceled`, when a task (call) is canceled by the caller; In other words, it's triggered when the caller cancels the call before it gets answered by the callee. 
 
@@ -109,7 +150,7 @@ Converted from EventType `task.canceled`, when a task (call) is canceled by the 
 | timestamp |      TimestampMs       |       Timestamp UTC's string        |
 |    sid    |          Sid           |         Twilio's Event Sid          |
  
-## call.finished
+### call.finished
 
 Converted from EventType `task.wrapup`, when a task (call) enters in the wrapup state; in other words, this event is triggered when either the agent or the caller hangs up, and the agent enters in the wrapup status.
 
@@ -124,13 +165,29 @@ The `actor.left` is also originated from the `task.wrapup` event.
 | their_number |   TaskAttributes.from    |      TaskAttributes.from       |
 |  timestamp   |       TimestampMs        |     Timestamp UTC's string     |
 |     sid      |           Sid            |       Twilio's Event Sid       |
+
+## Data events
+
+Converted from `custom.nps-provided`, that is triggered when the caller answer the NPS survey.
+
+|  Teravoz  | Twilio Input Event |                Value                |
+|:---------:|:------------------:|:-----------------------------------:|
+|   type    |     InputType      | Converted into "call.data-provided" |
+|  call_id  |      CallSid       |               CallSid               |
+|    nps    |       Digits       |               Digits                |
+|   data    |       Digits       |               Digits                |
+| timestamp |    TimestampMs     |       Timestamp UTC's string        |
  
-## actor.logged-in
+## Actor events
+ 
+### actor.logged-in
 
 Converted from EventType `worker.activity.update`, when the worker changes his state
 from unavailable/offline to available
 
-|  Teravoz  |            Twilio            |                 Value                  |
+This converted event is triggered multiple times, based on each queue that the worker belongs to. So, if the worker belongs to queues 900, 901 and 902, three `actor.logged-in` events will be sended to the webhook, each one for a different queue in the list.
+
+|  Teravoz  |      TaskRouter's Event      |                 Value                  |
 |:---------:|:----------------------------:|:--------------------------------------:|
 |   type    |          EventType           |            actor.logged-in             |
 |  number   | WorkerAttributes.contact_uri |      WorkerAttributes.contact_uri      |
@@ -139,12 +196,14 @@ from unavailable/offline to available
 | timestamp |         TimestampMs          |         Timestamp UTC's string         |
 |    sid    |             Sid              |           Twilio's Event Sid           |
 
-## actor.logged-out
+### actor.logged-out
 
 Converted from EventType `worker.activity.update`, when the worker changes his state
-from available to unavailable/offline
+from available to unavailable/offline.
 
-|  Teravoz  |            Twilio            |                 Value                  |
+This converted event is triggered multiple times, based on each queue that the worker belongs to. So, if the worker belongs to queues 900, 901 and 902, three `actor.logged-out` events will be sended to the webhook, each one for a different queue in the list.
+
+|  Teravoz  |      TaskRouter's Event      |                 Value                  |
 |:---------:|:----------------------------:|:--------------------------------------:|
 |   type    |          EventType           |            actor.logged-out            |
 |  number   | WorkerAttributes.contact_uri |      WorkerAttributes.contact_uri      |
@@ -153,7 +212,7 @@ from available to unavailable/offline
 | timestamp |         TimestampMs          |         Timestamp UTC's string         |
 |    sid    |             Sid              |           Twilio's Event Sid           |
 
-## actor.entered
+### actor.entered
 
 Converted from EventType `reservation.accepted`, when a worker accepts an incoming task (call).
 
@@ -169,7 +228,7 @@ The `call.ongoing` is originated from the same event.
 |  call_id  |   TaskAttributes.call_sid    |    TaskAttributes.call_sid     |
 |   type    |          EventType           | Converted into "actor.entered" |
 
-## actor.left
+### actor.left
 
 Converted from EventType `task.wrapup`, when a task (call) enters in the wrapup state; in other words, this event is triggered when either the agent or the caller hangs up, and the agent enters in the wrapup status.
 
@@ -185,7 +244,7 @@ The `call.finished` is also originated from the `task.wrapup` event.
 | timestamp |         TimestampMs         |   Timestamp UTC's string    |
 |    sid    |             Sid             |     Twilio's Event Sid      |
 
-## actor.ringing
+### actor.ringing
 
 Converted from EventType `reservation.created`, when a task (call) is assigned to a worker.
 
@@ -199,7 +258,7 @@ Converted from EventType `reservation.created`, when a task (call) is assigned t
 | timestamp |         TimestampMs          |     Timestamp UTC's string     |
 |    sid    |             Sid              |       Twilio's Event Sid       |
 
-## actor.noanswer
+### actor.noanswer
 
 Converted from EventType `reservation.rejected`, when a task (call) is declined or is just not answered by a worker.
 
@@ -215,11 +274,13 @@ Converted from EventType `reservation.rejected`, when a task (call) is declined 
 |    sid    |             Sid              |       Twilio's Event Sid        |
 
 
-## actor.paused
+### actor.paused
 
-Converted from EventType `worker.activity.update`, when the worker changes his state to break
+Converted from EventType `worker.activity.update`, when the worker changes his state to break. Different from Teravoz, the worker status is the same for all the queues, so the pause state is not defined by queue but by worker.
 
-|  Teravoz  |            Twilio            |                 Value                  |
+This converted event is triggered multiple times, based on each queue that the worker belongs to. So, if the worker belongs to the queues 900, 901 and 902, three `actor.paused` events will be sended to the webhook, each one for a different queue in the list.
+
+|  Teravoz  |      TaskRouter's Event      |                 Value                  |
 |:---------:|:----------------------------:|:--------------------------------------:|
 |   type    |          EventType           |              actor.paused              |
 |  number   | WorkerAttributes.contact_uri |      WorkerAttributes.contact_uri      |
@@ -228,11 +289,13 @@ Converted from EventType `worker.activity.update`, when the worker changes his s
 | timestamp |         TimestampMs          |         Timestamp UTC's string         |
 |    sid    |             Sid              |           Twilio's Event Sid           |
 
-## actor.unpaused
+### actor.unpaused
 
-Converted from EventType `worker.activity.update`, when the worker changes his state from break to available
+Converted from EventType `worker.activity.update`, when the worker changes his state from break to available.
 
-|  Teravoz  |            Twilio            |                 Value                  |
+This converted event is triggered multiple times, based on each queue that the worker belongs to. So, if the worker belongs to the queues 900, 901 and 902, three `actor.unpaused` events will be sended to the webhook, each one for a different queue in the list.
+
+|  Teravoz  |      TaskRouter's Event      |                 Value                  |
 |:---------:|:----------------------------:|:--------------------------------------:|
 |   type    |          EventType           |             actor.unpaused             |
 |  number   | WorkerAttributes.contact_uri |      WorkerAttributes.contact_uri      |
@@ -241,6 +304,55 @@ Converted from EventType `worker.activity.update`, when the worker changes his s
 | timestamp |         TimestampMs          |         Timestamp UTC's string         |
 |    sid    |             Sid              |           Twilio's Event Sid           |
 
+## Dialer Events
+
+### dialer.attempt
+
+Converted from `custom.dialer.attempt`, that is triggered when an attempt to call the provided number is being made.
+
+|  Teravoz  | Twilio Dialer Event |              Value              |
+|:---------:|:-------------------:|:-------------------------------:|
+|   type    |      EventType      | Converted into "dialer.attempt" |
+|  number   |         To          |               To                |
+|   code    | TaskAttributes.code |       TaskAttributes.code       |
+| timestamp |     TimestampMs     |     Timestamp UTC's string      |
+
+### dialer.success
+
+Converted from `custom.dialer.success`, that is triggered when the dialer call is answered by a human.
+
+|  Teravoz   | Twilio Dialer Event |                          Value                           |
+|:----------:|:-------------------:|:--------------------------------------------------------:|
+|    type    |      EventType      |             Converted into "dialer.success"              |
+|   number   |         To          |                            To                            |
+|    code    | TaskAttributes.code |                   TaskAttributes.code                    |
+|  call_id   |       CallSid       |                         CallSid                          |
+| amd_status |      AmdStatus      | Teravoz's amd_status property, mapped from the AmdStatus |
+| timestamp  |     TimestampMs     |                  Timestamp UTC's string                  |
+
+### dialer.failure
+
+Converted from `custom.dialer.failure`, that is triggered when the dialer call fails (not answered, declined, busy or when answered by a machine).
+
+### dialer.expired
+
+Converted from `custom.dialer.expired`, that is triggered when a dialer action expires.
+
+|  Teravoz  | Twilio Dialer Event |              Value              |
+|:---------:|:-------------------:|:-------------------------------:|
+|   type    |      EventType      | Converted into "dialer.expired" |
+|   code    | TaskAttributes.code |       TaskAttributes.code       |
+| timestamp |     TimestampMs     |     Timestamp UTC's string      |
+
+### dialer.exceeded
+
+Converted from `custom.dialer.exceeded`, that is triggered when a dialer retry count gets greater than the provided limit of retries.
+
+|  Teravoz  | Twilio Dialer Event |              Value               |
+|:---------:|:-------------------:|:--------------------------------:|
+|   type    |      EventType      | Converted into "dialer.exceeded" |
+|   code    | TaskAttributes.code |       TaskAttributes.code        |
+| timestamp |     TimestampMs     |      Timestamp UTC's string      |
 
 # Points to Review
 
