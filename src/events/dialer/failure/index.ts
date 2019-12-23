@@ -6,7 +6,7 @@ import { getTime } from '../../../date';
  * twilioDialerFailureHandler converts `custom.dialer.failure` to the
  * equivalent Teravoz's event `dialer.failure`
  *
- * The `custom.dialer.attempt` is triggered right after a call is rejected
+ * The `custom.dialer.failure` is triggered right after a call is rejected
  * or the AMD detects an Answering Machine instead of a human.
  * This event is a custom event, so it's not a default from Twilio;
  * It's only triggered manually calling the endpoint responsible from listening dialer

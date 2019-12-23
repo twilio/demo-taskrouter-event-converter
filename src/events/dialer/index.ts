@@ -10,7 +10,9 @@ import { eventsMapping } from './input-map';
 export enum TwilioCustomDialerEventsTypes {
   dialerAttempt = 'custom.dialer.attempt',
   dialerSuccess = 'custom.dialer.success',
-  dialerFailure = 'custom.dialer.failure'
+  dialerFailure = 'custom.dialer.failure',
+  dialerExpired = 'custom.dialer.expired',
+  dialerExceeded = 'custom.dialer.exceeded',
 }
 
 /**

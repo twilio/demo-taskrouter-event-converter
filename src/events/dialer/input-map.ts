@@ -3,6 +3,8 @@ import { TwilioCustomDialerEvent, TwilioCustomDialerEventsTypes } from '.';
 import { twilioDialerAttemptHandler } from './attempt';
 import { twilioDialerSuccessHandler } from './success';
 import { twilioDialerFailureHandler } from './failure';
+import { twilioDialerExpiredHandler } from './expired';
+import { twilioDialerExceededHandler } from './exceeded';
 
 type Handler = (event: TwilioCustomDialerEvent) => TeravozEvent[];
 
@@ -19,4 +21,6 @@ export const eventsMapping: EventsMapping = {
   'custom.dialer.attempt': twilioDialerAttemptHandler,
   'custom.dialer.success': twilioDialerSuccessHandler,
   'custom.dialer.failure': twilioDialerFailureHandler,
+  'custom.dialer.expired': twilioDialerExpiredHandler,
+  'custom.dialer.exceeded': twilioDialerExceededHandler,
 };
