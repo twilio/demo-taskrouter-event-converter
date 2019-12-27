@@ -2,9 +2,9 @@ import express, { Request, Response } from 'express';
 
 import { logger } from '../logger';
 import { taskRouterEventConverter } from '../events/task-router';
-import { ApiClient } from '../externals/api-client';
 import { gatherInputConverter } from '../events/gather-input';
 import { TwilioCustomDialerEvent, dialerEventsConverter } from '../events/dialer';
+import { publisher } from '../rabbitmq';
 
 /**
  * webhookHandler handles all the incoming TaskRouter's events.
@@ -24,10 +24,14 @@ const webhookHandler = async (req: Request, res: Response): Promise<void> => {
   const events = taskRouterEventConverter(event);
 
   if (events && events.length) {
-    const client = new ApiClient();
-    const responses = await client.sendMultipleEventsToWebhook(events);
-    logger.info(`${responses.length} event(s) sended.`);
-    logger.debug('Events responses: ', responses);
+    const promises = events.map(
+      (ev): Promise<any> => {
+        return publisher.publish(ev);
+      },
+    );
+
+    await Promise.all(promises);
+    logger.info(`${events.length} event(s) published.`);
   } else {
     logger.info(`Event ${event.EventType} not found to convert to Teravoz's event. Ignoring.`);
   }
@@ -58,10 +62,14 @@ const inputHandler = async (req: Request, res: Response): Promise<void> => {
   const events = gatherInputConverter(input);
 
   if (events && events.length) {
-    const client = new ApiClient();
-    const responses = await client.sendMultipleEventsToWebhook(events);
-    logger.info(`${responses.length} event(s) sended.`);
-    logger.debug('Events responses: ', responses);
+    const promises = events.map(
+      (ev): Promise<any> => {
+        return publisher.publish(ev);
+      },
+    );
+
+    await Promise.all(promises);
+    logger.info(`${events.length} event(s) published.`);
   } else {
     logger.info(`Input ${input.InputType} not found to convert to Teravoz's event. Ignoring.`);
   }
@@ -84,10 +92,14 @@ const dialerEventHandler = async (req: Request, res: Response): Promise<void> =>
   const events = dialerEventsConverter(event);
 
   if (events && events.length) {
-    const client = new ApiClient();
-    const responses = await client.sendMultipleEventsToWebhook(events);
-    logger.info(`${responses.length} event(s) sended.`);
-    logger.debug('Events responses: ', responses);
+    const promises = events.map(
+      (ev): Promise<any> => {
+        return publisher.publish(ev);
+      },
+    );
+
+    await Promise.all(promises);
+    logger.info(`${events.length} event(s) published.`);
   } else {
     logger.info(
       `Twilio's dialer event ${event.EventType} not found to convert to Teravoz's event. Ignoring.`,

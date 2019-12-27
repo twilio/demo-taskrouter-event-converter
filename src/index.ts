@@ -5,6 +5,7 @@ import { loadRoutesInto } from './routes';
 import { botFilterMiddleware } from './middlewares/bot-filter';
 import { taskFilterMiddleware } from './middlewares/task-filter';
 import { environment } from './environment';
+import { publisher } from './rabbitmq';
 
 interface CommonRequestDetails {
   body: any;
@@ -42,7 +43,7 @@ const requestLogger = (
   next();
 };
 
-((): void => {
+(async (): Promise<void> => {
   const app = express();
 
   app.use(express.json());
@@ -53,6 +54,9 @@ const requestLogger = (
   app.use(taskFilterMiddleware);
 
   loadRoutesInto(app);
+
+  await publisher.openConnection();
+  await publisher.openChannel();
 
   app.listen('3000', () => {
     logger.info('Server running at http://localhost:3000');

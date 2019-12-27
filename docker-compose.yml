@@ -1,0 +1,11 @@
+version: "3.0"
+services:
+  events_rabbitmq:
+    image: rabbitmq:3.8.2-management
+    hostname: events-rabbitmq
+    container_name: events-rabbitmq
+    ports:
+      - 5672:5672
+      - 8080:15672
+    
+
