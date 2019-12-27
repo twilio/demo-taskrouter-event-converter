@@ -7,5 +7,17 @@ services:
     ports:
       - 5672:5672
       - 8080:15672
-    
+    networks: 
+      - events-network
+  events_redis:
+    image: redis:5.0.7-alpine
+    command: redis-server --requirepass @Uc&2YnrDqJ56k/^
+    container_name: events-redis
+    ports: 
+      - 6379:6379
+    networks: 
+      - events-network
+networks:
+  events-network:
+    driver: bridge
 

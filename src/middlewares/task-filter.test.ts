@@ -5,7 +5,7 @@ describe('Test TaskFilterMiddleware', () => {
     const req = {
       body: {
         EventType: 'task.created',
-        // Since there isn't a call_id in the task attributes, it's not a task related to a call.
+        // Since there isn't a call_sid in the task attributes, it's not a task related to a call.
         TaskAttributes: JSON.stringify({
           attr: 'Random attribute',
         }),
@@ -31,7 +31,7 @@ describe('Test TaskFilterMiddleware', () => {
         // Since there isn't a call_id in the task attributes, it's not a task related to a call.
         TaskAttributes: JSON.stringify({
           attr: 'Random attribute',
-          call_id: 'CA123',
+          call_sid: 'CA123',
         }),
       },
     };

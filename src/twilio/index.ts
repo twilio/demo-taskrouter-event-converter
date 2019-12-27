@@ -110,4 +110,5 @@ export interface TaskRouterEvent extends TaskEventFields, WorkerEventFields, Tas
  *
  * @param type the Event to be checked
  */
-export const isTaskEvent = (event: TaskRouterEvent): boolean => event.EventType.startsWith('task.');
+export const isTaskEvent = (event: TaskRouterEvent): boolean =>
+  event.EventType && event.EventType.startsWith('task.');

@@ -11,9 +11,9 @@ export const taskFilterMiddleware = (req: Request, res: Response, next: NextFunc
   const { body: event } = req as { body: TaskRouterEvent };
 
   if (isTaskEvent(event) && event.TaskAttributes) {
-    const { call_id = null } = JSON.parse(event.TaskAttributes);
+    const { call_sid = null } = JSON.parse(event.TaskAttributes);
 
-    if (!call_id) {
+    if (!call_sid) {
       logger.info('Ignoring non-call related task event: ', event.EventType);
       logger.debug('Ignored event details: ', event);
       res.status(200).json();

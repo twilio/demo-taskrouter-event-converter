@@ -1,5 +1,6 @@
 import amqplib from 'amqplib';
 
+import uuidv4 from 'uuid/v4';
 import { RabbitMQ } from '.';
 import { logger } from '../logger';
 
@@ -32,7 +33,7 @@ export class RabbitMQPublisher {
     }
   }
 
-  async publish(content: any): Promise<void> {
+  async publish(content: Record<string, any>): Promise<void> {
     try {
       if (!this.rabbitmq.conn) {
         throw new Error('Connection not opened.');
@@ -43,7 +44,15 @@ export class RabbitMQPublisher {
       }
 
       await this.channel.assertQueue(this.queue);
-      this.channel.sendToQueue(this.queue, Buffer.from(JSON.stringify(content)));
+
+      const msg = JSON.stringify({
+        ...content,
+        uuid: uuidv4(),
+      });
+
+      logger.debug('Message to be published: ', msg);
+
+      this.channel.sendToQueue(this.queue, Buffer.from(msg));
     } catch (err) {
       logger.error('Error while publishing to RabbitMQ queue:', err);
     }
