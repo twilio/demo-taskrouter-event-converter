@@ -70,9 +70,12 @@ describe('Convert task.created', (): void => {
 });
 
 describe('Convert task.canceled', (): void => {
-  test('Should convert task.canceled to call.queue-abandon', (): void => {
+  test('Should convert task.canceled to call.queue-abandon AND call.finished', (): void => {
     const taskAttr = {
       call_sid: 'CA123',
+      direction: 'inbound',
+      called: '5511911111111',
+      from: '5511922222222',
     };
 
     const input = {
@@ -87,14 +90,22 @@ describe('Convert task.canceled', (): void => {
 
     expect(events).not.toBeFalsy();
     expect(events).toBeInstanceOf(Array);
-    expect(events.length).toBe(1);
+    expect(events.length).toBe(2);
 
-    const [{ type, call_id, timestamp, sid }] = events;
+    const [firstCallEvent, secondCallEvent] = events;
 
-    expect(type).toBe('call.queue-abandon');
-    expect(call_id).toBe(taskAttr.call_sid);
-    expect(timestamp).toStrictEqual(expect.any(String));
-    expect(sid).toBe(input.Sid);
+    expect(firstCallEvent.type).toBe('call.queue-abandon');
+    expect(firstCallEvent.call_id).toBe(taskAttr.call_sid);
+    expect(firstCallEvent.timestamp).toStrictEqual(expect.any(String));
+    expect(firstCallEvent.sid).toBe(input.Sid);
+
+    expect(secondCallEvent.type).toBe('call.finished');
+    expect(secondCallEvent.call_id).toBe(taskAttr.call_sid);
+    expect(secondCallEvent.direction).toBe(taskAttr.direction);
+    expect(secondCallEvent.our_number).toBe(taskAttr.called);
+    expect(secondCallEvent.their_number).toBe(taskAttr.from);
+    expect(secondCallEvent.timestamp).toStrictEqual(expect.any(String));
+    expect(secondCallEvent.sid).toBe(input.Sid);
   });
 
   test('Should throw an error if the event passed to the handler is different from task.canceled', (): void => {

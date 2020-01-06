@@ -154,9 +154,10 @@ Converted from EventType `task.canceled`, when a task (call) is canceled by the 
  
 ### call.finished
 
-Converted from EventType `task.wrapup`, when a task (call) enters in the wrapup state; in other words, this event is triggered when either the agent or the caller hangs up, and the agent enters in the wrapup status.
+This event can be converted from the EventType `task.wrapup` or `task.canceled`. When a task (call) enters in the wrapup state, the `task.wrapup` is triggered when either the agent or the caller hangs up, and the agent enters in the wrapup status. When a task is canceled by the caller, it will also trigger the `call.finished` Teravoz's event.
 
-The `actor.left` is also originated from the `task.wrapup` event.
+The `actor.left` is also originated from the `task.wrapup` event. 
+The `call.queue-abandon` is also originated from `task.canceled`.
 
 |   Teravoz    |    TaskRouter's Event    |             Value              |
 |:------------:|:------------------------:|:------------------------------:|

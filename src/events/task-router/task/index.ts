@@ -58,21 +58,34 @@ export const taskCreatedHandler = ({
 
 /**
  * taskCanceledHandler converts the `task.canceled` TaskRouter's
- * event to the equivalent Teravoz's event `call.queue-abandon`.
+ * event to the equivalent Teravoz's events `call.queue-abandon` and `call.finished`.
  *
  * The `task.canceled` TaskRouter's event is triggered each time a
  * task is canceled. When using Twilio Flex, when a caller that was waiting
  * on a TaskQueue give up of the call, the task is marked as canceled. That's
- * why we convert this event to the Teravoz's one `call.queue-abandon`
+ * why we convert this event to the Teravoz's one `call.queue-abandon` and `call.finished`
  *
  * The mapped structure will be:
  *
+ *  ### call.queue-abandon
 |  Teravoz  |   TaskRouter's Event   |                Value                |
 |:---------:|:----------------------:|:-----------------------------------:|
 |   type    |       EventType        | Converted into "call.queue-abandon" |
 |  call_id  | TaskAttributes.call_id |       TaskAttributes.call_id        |
 | timestamp |      TimestampMs       |       Timestamp UTC's string        |
 |    sid    |          Sid           |         Twilio's Event Sid          |
+ *
+ * ### call.finished
+ *
+|   Teravoz    |    TaskRouter's Event    |             Value              |
+|:------------:|:------------------------:|:------------------------------:|
+|     type     |        EventType         | Converted into "call.finished" |
+|   call_id    |  TaskAttributes.call_id  |     TaskAttributes.call_id     |
+|  direction   | TaskAttributes.direction |    TaskAttributes.direction    |
+|  our_number  |  TaskAttributes.called   |     TaskAttributes.called      |
+| their_number |   TaskAttributes.from    |      TaskAttributes.from       |
+|  timestamp   |       TimestampMs        |     Timestamp UTC's string     |
+|     sid      |           Sid            |       Twilio's Event Sid       |
  *
  * @param taskRouterEvent The incoming TaskRouter's event
  */
@@ -81,7 +94,7 @@ export const taskCanceledHandler = ({
   EventType,
   TaskAttributes,
   TimestampMs,
-}: TaskRouterEvent): CallEvent[] => {
+}: TaskRouterEvent): [CallEvent, CallEvent] => {
   if (EventType !== TaskRouterEventTypes.taskCanceled) {
     throw new Error(
       `Only tasks of type '${TaskRouterEventTypes.taskCanceled}' can be handled by taskCanceledhandler.`,
@@ -92,13 +105,23 @@ export const taskCanceledHandler = ({
     throw new Error(`Missing TaskAttributes in '${TaskRouterEventTypes.taskCanceled}' event.`);
   }
 
-  const { call_sid: callId } = JSON.parse(TaskAttributes);
+  const { call_sid: callId, direction, called, from } = JSON.parse(TaskAttributes);
+  const timestamp = getTime(TimestampMs);
 
   return [
     {
       type: CallEvents.queueAbandon,
       call_id: callId,
-      timestamp: getTime(TimestampMs),
+      timestamp,
+      sid: Sid,
+    },
+    {
+      type: CallEvents.finished,
+      call_id: callId,
+      direction,
+      our_number: called,
+      their_number: from,
+      timestamp,
       sid: Sid,
     },
   ];
