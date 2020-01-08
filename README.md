@@ -4,7 +4,11 @@
 
 # Table of Contents
 
-- [Summary](#summary)
+- [The project](#the-project)
+  * [Quickstart](#quickstart)
+  * [Service Structure](#service-structure)
+    + [File structure](#file-structure)
+- [Event conversion](#event-conversion)
   * [Task events](#task-events)
   * [Task Queue Events](#task-queue-events)
   * [Reservation Events](#reservation-events)
@@ -34,22 +38,114 @@
     + [dialer.failure](#dialerfailure)
     + [dialer.expired](#dialerexpired)
     + [dialer.exceeded](#dialerexceeded)
-- [Points to Review](#points-to-review)
-- [Missing fields](#missing-fields)
-  * [General](#general)
-  * [call.new](#callnew-1)
-  * [actor.* events](#actor-events)
+- [Attention Points](#attention-points)
+  * [Missing fields](#missing-fields)
+    + [call.new](#callnew-1)
 
-# Summary
-In general, most of the fields that exists on Teravoz's events could be converted from TaskRouter events. The main differences are on **number** fields when they're related to the agent. As in Twilio Flex the agents doesn't have a real peer number, the information present on this number fact is, actually, the `contact_uri` present on the Worker attributes. So,for an agent named `foo` is using flex, the number of the agent provided in the events will be equal to `client:foo`, and not a real peer number. 
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
-Also, when the `queue` attribute is converted, it is converted to the TaskQueue SID, that also is not a phone number.
+# The project
 
-By the way, here is the list of the Task Router's events and their representation as teravoz events:
+## Quickstart
+
+In order to run this project, you'll have to had node and npm/yarn installed in your machine. It's recommended that you run this project with a node version greater or equal to v10.
+
+The first step is to install the project dependencies, running either one of these commands:
+
+```bash
+yarn
+
+# OR using npm:
+
+npm i
+```
+
+After the download of the dependencies ends, you'll need to configure a `.env` file before running up the start script. Use the `.env.example` as base to create this file and customize the fields with your desired data:
+
+```
+EXTERNAL_WEBHOOK_ENDPOINT={{server_url}}
+LOG_LEVEL=info
+SUPPRESS_SID=false
+HTTP_PORT=3000
+```
+
+It's strongly recommended to provide the Teravoz's default URL to test the company events or an custom local server to receive and print the converted events. Replace the {{company_login}} below on the query string by your company name to use the Teravoz's event endpoint tester:
+
+```
+EXTERNAL_WEBHOOK_ENDPOINT=https://developers.teravoz.com.br/myevents?login={{company_login}}
+LOG_LEVEL=info
+SUPPRESS_SID=false
+HTTP_PORT=3000
+```
+
+After that, you're ready to start the development server:
+
+```bash
+
+yarn dev
+
+# OR
+
+npm run dev
+```
+
+This will start an server instance in the port provided in the `.env` file, and the log of the server will be pretty-printed in the terminal. To see the magic happening, use a tool like [ngrok](https://ngrok.com/) to expose the local server and copy the generated link into the TaskRouter's Event Callback url on your flex workspace (see https://www.twilio.com/docs/flex/routing/api/event#event-callbacks).
+
+## Service Structure
+
+The service had been built using Node (v12.13.0) and yarn as his dependency manager (v1.21.1), but it should also work fine using npm. To ensure the events structure, the service uses Typescript, where either Twilio's events and the Teravoz's events are decently typed.
+
+The server is built up in an very simply structure using express. Most of the server configuration is done in `src/index.ts`. The core of the service lives in the `src/events` folder, where all the conversions from the Twilio's events to Teravoz events are made. The `src/routes/index.ts` file do the bind between the server routes to their respectives conversion handlers. The `src/twilio` and `src/teravoz` folders are most composed by typings that defines the events structures.
+
+Last but not least, all the conversion logic and most of the code in overall have unit tests, present in the files with the suffix `.test.ts`. They are used not only to ensure that the conversion is being made correctly but also 
+to serve as an addictional documentation of how these events are being manipulated.
+
+### File structure
+
+```
+.
+├── README.md                   # This file
+├── .env.example                # Example of a environment configuration file
+├── jest.config.js              # Configuration to run tests
+├── package.json                # The good ol' package.json
+├── src           
+│   │   └── index.ts            # The service initialization lives here
+│   ├── environment             # Environment related code (variables)
+│   │   └── index.ts
+│   ├── events                  # All the event conversion logic lives here
+│   │   ├── converter.ts        # Abstract converter that defines all converters
+│   │   ├── dialer              # Contains the code responsible from the conversion of events from dialer
+│   │   ├── gather-input        # Contains the code responsible from the conversion of events from caller input
+│   │   └── task-router         # Contains the code responsible from the conversion of events from Twilio's TaskRouter. 
+│   ├── externals               # The code responsible from communicate to external services lives here
+│   │   └── api-client.ts       # The client responsible to send the converted Teravoz's events to the webhook lives here
+│   ├── index.ts
+│   ├── logger                  # The configuration of the service logger lives here
+│   │   └── index.ts
+│   ├── middlewares
+│   │   ├── bot-filter.ts       # Middleware responsible for filtering Taskrouter's events from workers that's not a human being
+│   │   └── task-filter.ts      # Middleware responsible for filtering Taskrouter's events from tasks that doesn't represent a call
+│   ├── routes                  # The server routing lives here, together with the handlers that'll redirect each event to their respectives converters
+│   │   └── index.ts
+│   ├── teravoz                 # Teravoz's related typing
+│   │   └── index.ts
+│   └── twilio
+│       ├── index.ts            # Twilio's related typing and logic
+├── tsconfig.json               # Typescript configuration file
+└── yarn.lock
+```
+
+# Event conversion
+
+In general, most of the fields that exists on Teravoz's events could be fetched from Twilio's events, but the format of the information that comes from their fields are mostly in different formats. One of the main differences are on **number** fields when they're related to the agent. In Twilio Flex, the agents doesn't have a real peer number, so the information present on the `number` field of the resulting Teravoz's event is, in fact, the `contact_uri` present on the Worker attributes. So, for an agent named `foo` that is using flex, the number of the agent provided in the events will be equal to `client:foo`.
+
+Also, when the `queue` attribute is converted, his value will be the TaskQueue SID, and not a simply queue number that used to be present in Teravoz's events.
+
+Below, you can find more details about the events converted, mapped from Twilio's events to Teravoz's events. You'll notice that, in some cases, one Twilio's events produces two Teravoz's events, so that's the reason that the conversors will ever return an array of events:
 
 ## Task events
 * task.created -> **call.new**
-* task.canceled -> **call.queue-abandon**
+* task.canceled -> **call.queue-abandon** AND **call.finished**
 * task.wrapup -> **call.finished** AND **actor.left**
 
 ## Task Queue Events
@@ -61,7 +157,7 @@ By the way, here is the list of the Task Router's events and their representatio
 * reservation.created -> **actor.ringing**
 
 ## Worker Events
-*  worker.activity.update -> varies considering the WorkerActivityName:
+*  worker.activity.update -> the converted value changes considering the WorkerActivityName:
 * * If the WorkerActivityName is equal to `available` and he was not already available on the queue, then an **actor.logged-in** event is produced
 * * If the WorkerActivityName is equal to `unavailable` or `offline`, while the agent was already not in these two status, then an **actor.logged-out** is produced
 * * If the WorkerActivityName is equal to `break`, and the user was not already in the `break` status, then an **actor.paused** is produced
@@ -69,9 +165,9 @@ By the way, here is the list of the Task Router's events and their representatio
 
 # Dialer events
 
-The Dialer's events are different from the TaskRouter's events. The Dialer's events aren't a default from Twilio, since the dialer itself is a custom implementation made by Teravoz. Therefore, these events are triggered manually in the Dialer's code by sending a POST to the `/dialer` endpoint.
+The Dialer's events are slightly different from the TaskRouter's events. The Dialer's events aren't a default from Twilio, since the dialer itself is a custom implementation made by Teravoz. Therefore, these events are triggered manually in the Dialer's code by sending a POST to the `/dialer` endpoint.
 
-By default, these dialer events names are defined by the name that it represents in Teravoz's events with the prefix `custom.`. So, the conversion of the events are simple:
+By default, these dialer events names are defined by the name that it represents in Teravoz's events with the prefix `custom.`. So, the conversion of the events are very straightforward:
 
 * custom.dialer.attempt -> **dialer.attempt**
 * custom.dialer.success -> **dialer.success**
@@ -81,14 +177,14 @@ By default, these dialer events names are defined by the name that it represents
 
 
 # Converted Inputs
-The user inputs events are generated by custom Twilio's function and are not received by POSTing the `/webhook` endpoint. Instead, the input data will be received on the `/input` route, and will also convert the received input to Teravoz's events. As these events aren't officialy emitted by task-router, they've fully customizable names that can be changed. For now, only the NPS input gathered by user is converted:
+The user inputs events are generated by custom Twilio's functions or Studio components callback and are not received by POSTing the `/webhook` endpoint. Instead, the input data will be received on the `/input` route, and will also convert the received input to Teravoz's events. As these events aren't officialy emitted by task-router, they've fully customizable names that can be changed depending of your implementation. As example in this code, only the NPS input gathered by user is converted:
 
 * custom.nps-provided -> **call.data-provided**, with the fields `data` and `nps` filled with the user evaluation of the call.
 
 
 # Conversion Mapping
 
-Each conversion handler is docummented with the conversion of the fields from Taskrouter's events to Teravoz's events, and you can view then generating the docs using `yarn docs` or `npm run docs`, after you properly install the project dependencies.
+Each conversion handler is documented with the conversion of the fields from the events, and you can view then generating the docs using `yarn docs` or `npm run docs`, after you properly install the project dependencies.
 
 Also, for reference, the conversion mapping of the fields from the events are described below.
 
@@ -96,7 +192,7 @@ Also, for reference, the conversion mapping of the fields from the events are de
 
 ### call.new
 
-Converted from EventType `task.created`, when a task (call) starts. 
+Converted from EventType `task.created`, when a task (call) is created. 
 
 |   Teravoz    |    TaskRouter's Event    |           Value           |
 |:------------:|:------------------------:|:-------------------------:|
@@ -145,6 +241,8 @@ The `actor.entered` is originated from the same event.
 
 Converted from EventType `task.canceled`, when a task (call) is canceled by the caller; In other words, it's triggered when the caller cancels the call before it gets answered by the callee. 
 
+The [call.finished](#callfinished) event is also originated from the `task.canceled` event
+
 |  Teravoz  |   TaskRouter's Event   |                Value                |
 |:---------:|:----------------------:|:-----------------------------------:|
 |   type    |       EventType        | Converted into "call.queue-abandon" |
@@ -154,10 +252,9 @@ Converted from EventType `task.canceled`, when a task (call) is canceled by the 
  
 ### call.finished
 
-This event can be converted from the EventType `task.wrapup` or `task.canceled`. When a task (call) enters in the wrapup state, the `task.wrapup` is triggered when either the agent or the caller hangs up, and the agent enters in the wrapup status. When a task is canceled by the caller, it will also trigger the `call.finished` Teravoz's event.
+This event can be converted from the EventType `task.wrapup` or `task.canceled`: when a task (call) enters in the wrapup state, the `task.wrapup` is triggered when either the agent or the caller hangs up, and the agent enters in the wrapup status. When a task is canceled, it will also trigger the `call.finished` Teravoz's event.
 
-The `actor.left` is also originated from the `task.wrapup` event. 
-The `call.queue-abandon` is also originated from `task.canceled`.
+The [actor.left](#actorleft) is also originated from the `task.wrapup` event, and the [call.queue-abandon](#callqueue-abandon) is also originated from `task.canceled`.
 
 |   Teravoz    |    TaskRouter's Event    |             Value              |
 |:------------:|:------------------------:|:------------------------------:|
@@ -219,7 +316,7 @@ This converted event is triggered multiple times, based on each queue that the w
 
 Converted from EventType `reservation.accepted`, when a worker accepts an incoming task (call).
 
-The `call.ongoing` is originated from the same event.
+The [call.ongoing](#callongoing) is originated from the `reservation.accepted` event.
 
 |  Teravoz  |      TaskRouter's Event      |             Value              |
 |:---------:|:----------------------------:|:------------------------------:|
@@ -235,7 +332,7 @@ The `call.ongoing` is originated from the same event.
 
 Converted from EventType `task.wrapup`, when a task (call) enters in the wrapup state; in other words, this event is triggered when either the agent or the caller hangs up, and the agent enters in the wrapup status.
 
-The `call.finished` is also originated from the `task.wrapup` event.
+The [call.finished](#callfinished) is also originated from the `task.wrapup` event.
 
 |  Teravoz  |     TaskRouter's Event      |            Value            |
 |:---------:|:---------------------------:|:---------------------------:|
@@ -357,27 +454,10 @@ Converted from `custom.dialer.exceeded`, that is triggered when a dialer retry c
 |   code    | TaskAttributes.code |       TaskAttributes.code        |
 | timestamp |     TimestampMs     |      Timestamp UTC's string      |
 
-# Points to Review
+# Attention Points
 
-* When a `actor.noanswer` is produced, the `ringtime` is equals to the task age on Twilio's Task Router, not the time that was ringing to the extension that have rejected or not answered the call.
+## Missing fields
 
-* Verify where to emit the `peer.ringing` Teravoz event and what is the difference between it and the `actor.ringing` event.
-
-* In order to `data.cpf-provided` and `data-cnpj-provided` to work, they'll also need a function to receive these user inputs and transform it in a custom-event to be converted to the Teravoz event. Thinking on only these two cases, it's OK to build the solution in this way, but if we think about customization and more user inputs that varies by client, it will be a mess to have to create a function to each user input, so maybe it's better to think in a better solution.
-
-# Missing fields
-
-## General
-
-* **code** - This field is intended to be provided by user when triggering the dialer, to recognize an specific call in the events. Maybe it's possible to pass these code if we defines how it will be passed to the TaskRouter's task and how it'll be saved into the task attributes.
-
-## call.new
+### call.new
 
 * **their_number_type** - This info is not provided when the taskRouter callback is triggered on `task.new` event.
-
-## actor.* events
-
-* ~~**queue** - The change of status using the TaskRouter is not related to a queue, so this parameter is not provided by Twilio.~~
-
->Now, all the actor related events are emitted for each queue that the agent is inserted into. Example: If a agent that belongs to queues 900 and 901 changes his status to available, then two `actor.logged-in` events will be emitted: one for queue `900` and another for queue `901`.
-

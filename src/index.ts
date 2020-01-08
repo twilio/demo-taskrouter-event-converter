@@ -5,7 +5,6 @@ import { loadRoutesInto } from './routes';
 import { botFilterMiddleware } from './middlewares/bot-filter';
 import { taskFilterMiddleware } from './middlewares/task-filter';
 import { environment } from './environment';
-import { publisher } from './rabbitmq';
 
 interface CommonRequestDetails {
   body: any;
@@ -55,11 +54,8 @@ const requestLogger = (
 
   loadRoutesInto(app);
 
-  await publisher.openConnection();
-  await publisher.openChannel();
-
-  app.listen('3000', () => {
-    logger.info('Server running at http://localhost:3000');
+  app.listen(environment.httpPort, () => {
+    logger.info(`Server running at http://localhost:${environment.httpPort}`);
 
     if (environment.suppressSid) {
       logger.info('Suppressing SID from generated events...');

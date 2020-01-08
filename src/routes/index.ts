@@ -4,7 +4,7 @@ import { logger } from '../logger';
 import { taskRouterEventConverter } from '../events/task-router';
 import { gatherInputConverter } from '../events/gather-input';
 import { TwilioCustomDialerEvent, dialerEventsConverter } from '../events/dialer';
-import { publisher } from '../rabbitmq';
+import { ApiClient, WebhookResponse } from '../externals/api-client';
 
 /**
  * webhookHandler handles all the incoming TaskRouter's events.
@@ -19,14 +19,15 @@ import { publisher } from '../rabbitmq';
  */
 const webhookHandler = async (req: Request, res: Response): Promise<void> => {
   const { body: event } = req;
+  const client = new ApiClient();
 
   logger.info(`POST /webhook: Received ${event.EventType}.`);
   const events = taskRouterEventConverter(event);
 
   if (events && events.length) {
     const promises = events.map(
-      (ev): Promise<any> => {
-        return publisher.publish(ev);
+      (ev): Promise<WebhookResponse> => {
+        return client.sendEventToWebhook(ev);
       },
     );
 
@@ -52,6 +53,7 @@ const webhookHandler = async (req: Request, res: Response): Promise<void> => {
  */
 const inputHandler = async (req: Request, res: Response): Promise<void> => {
   const { body: input } = req;
+  const client = new ApiClient();
 
   if (!input.CallSid) {
     logger.warn('POST /input: Received input without a CallSid. Ignoring.');
@@ -63,8 +65,8 @@ const inputHandler = async (req: Request, res: Response): Promise<void> => {
 
   if (events && events.length) {
     const promises = events.map(
-      (ev): Promise<any> => {
-        return publisher.publish(ev);
+      (ev): Promise<WebhookResponse> => {
+        return client.sendEventToWebhook(ev);
       },
     );
 
@@ -87,6 +89,7 @@ const inputHandler = async (req: Request, res: Response): Promise<void> => {
  */
 const dialerEventHandler = async (req: Request, res: Response): Promise<void> => {
   const { body: event } = req as { body: TwilioCustomDialerEvent };
+  const client = new ApiClient();
 
   logger.info(`POST /dialer: Received ${event.EventType}`);
   const events = dialerEventsConverter(event);
@@ -94,7 +97,7 @@ const dialerEventHandler = async (req: Request, res: Response): Promise<void> =>
   if (events && events.length) {
     const promises = events.map(
       (ev): Promise<any> => {
-        return publisher.publish(ev);
+        return client.sendEventToWebhook(ev);
       },
     );
 

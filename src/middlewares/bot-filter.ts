@@ -13,7 +13,8 @@ export const botFilterMiddleware = (req: Request, res: Response, next: NextFunct
     const { bot = false } = JSON.parse(event.WorkerAttributes);
 
     if (bot) {
-      logger.info('Ignoring bot related event: ', event);
+      logger.info('Ignoring bot related event:', event.EventType);
+      logger.debug('Ignored bot event details:', event);
       res.status(200).json();
       return;
     }
