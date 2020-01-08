@@ -70,10 +70,10 @@ export const taskCreatedHandler = ({
  *  ### call.queue-abandon
 |  Teravoz  |   TaskRouter's Event   |                Value                |
 |:---------:|:----------------------:|:-----------------------------------:|
-|   type    |       EventType        | Converted into "call.queue-abandon" |
 |  call_id  | TaskAttributes.call_id |       TaskAttributes.call_id        |
-| timestamp |      TimestampMs       |       Timestamp UTC's string        |
 |    sid    |          Sid           |         Twilio's Event Sid          |
+| timestamp |      TimestampMs       |       Timestamp UTC's string        |
+|   type    |       EventType        | Converted into "call.queue-abandon" |
  *
  * ### call.finished
  *

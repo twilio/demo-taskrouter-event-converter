@@ -359,15 +359,9 @@ Converted from `custom.dialer.exceeded`, that is triggered when a dialer retry c
 
 # Points to Review
 
-* ~~When the Task enters in the wrapup state (task.wrapup event), two Teravoz's events are fired: `call.finished` AND `agent.left`. However, maybe the actor.left event should be fired when the task finishes (task.completed event), because only on the end of the wrapup status the agent will be available again.~~
-
->The point above doesn't seems to make sense now, but I'll leave it here with a stroke just in case.
-
 * When a `actor.noanswer` is produced, the `ringtime` is equals to the task age on Twilio's Task Router, not the time that was ringing to the extension that have rejected or not answered the call.
 
 * Verify where to emit the `peer.ringing` Teravoz event and what is the difference between it and the `actor.ringing` event.
-
-* The `actor.logged-in` and the `actor.logged-out` events are emitted for all queues, but in the Teravoz legacy system these events were only emitted when the agent perform a login/logout in a **dialer** queue. For "normal" queues, no events indicating the actor being available/unavailable are emitted. I don't know if it's better to leave the behavior in this way or try to simulate the way that Teravoz works, but then the queues will have to had a property to differentiate the dialer queues from the attendance queues. 
 
 * In order to `data.cpf-provided` and `data-cnpj-provided` to work, they'll also need a function to receive these user inputs and transform it in a custom-event to be converted to the Teravoz event. Thinking on only these two cases, it's OK to build the solution in this way, but if we think about customization and more user inputs that varies by client, it will be a mess to have to create a function to each user input, so maybe it's better to think in a better solution.
 
