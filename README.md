@@ -100,6 +100,10 @@ The server is built up in an very simply structure using express. Most of the se
 Last but not least, all the conversion logic and most of the code in overall have unit tests, present in the files with the suffix `.test.ts`. They are used not only to ensure that the conversion is being made correctly but also 
 to serve as an addictional documentation of how these events are being manipulated.
 
+Below, there's a simple diagram that shows the service endpoints and where the events come from:
+
+![Project diagram](diagram.png?raw=true "Diagram")
+
 ### File structure
 
 ```
