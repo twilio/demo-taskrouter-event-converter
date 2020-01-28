@@ -141,7 +141,13 @@ export const workerActivityUpdateHandler = (taskRouterEvent: TaskRouterEvent): A
     return [];
   }
 
-  const { contact_uri: contactUri, queues = [] } = JSON.parse(WorkerAttributes);
+  const attrs = JSON.parse(WorkerAttributes);
+  const { contact_uri: contactUri, queue = [] } = attrs;
+  let { queues = [] } = attrs;
+
+  // Workaround: you don't neet to check either the queue and queues
+  // attributes in production environment. Just choose one.
+  queues = queues.length ? queues : queue;
 
   if (!queues.length) {
     logger.warn(

@@ -5,6 +5,7 @@ import { loadRoutesInto } from './routes';
 import { botFilterMiddleware } from './middlewares/bot-filter';
 import { taskFilterMiddleware } from './middlewares/task-filter';
 import { environment } from './environment';
+import { heartbeatFilterMiddleware } from './middlewares/hearbeat-filter';
 
 interface CommonRequestDetails {
   body: any;
@@ -51,6 +52,7 @@ const requestLogger = (
 
   app.use(botFilterMiddleware);
   app.use(taskFilterMiddleware);
+  app.use(heartbeatFilterMiddleware);
 
   loadRoutesInto(app);
 
