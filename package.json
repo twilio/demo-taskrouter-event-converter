@@ -15,7 +15,7 @@
     "@types/node-fetch": "^2.5.4",
     "@types/uuid": "^3.4.6",
     "env-cmd": "^10.0.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "moment": "^2.24.0",
     "node-fetch": "^2.6.0",
     "pino": "^5.14.0"
